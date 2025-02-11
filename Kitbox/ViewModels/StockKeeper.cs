@@ -7,14 +7,14 @@ using System;
 
 namespace Kitbox.ViewModels;
 
-// représente un objet affichable sur l'interface
+
 public abstract class StockKeeper : User 
 {
     
 
-   
-   
-    // New method to update life and energy
+   public StockKeeper() {
+        username = "stockkeeper";
+    }
    
 
 }
