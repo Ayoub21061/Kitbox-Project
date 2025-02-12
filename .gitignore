@@ -1,3 +1,9 @@
 bin/
 obj/
 .vscode/
+
+#Ignores file changes in the .vs folder too if using visual studio instead of vscode.
+.vs/
+
+#If this folder brings some compatibility issues remove the # from the line below
+#.Kitbox/obj/Debug/net8.0/
