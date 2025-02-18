@@ -11,44 +11,46 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Entête -->
         <Border Background="Red" Height="50" HorizontalAlignment="Stretch" Grid.Row="0">
             <TextBlock Text="Welcome to Kitbox's App" Foreground="White"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        FontSize="18" FontWeight="Bold"/>
         </Border>
 
-        <StackPanel Margin="0,10,100,0" Grid.Row="1" HorizontalAlignment="Left">
-            <!-- Hauteur -->
-            <TextBlock Text="Hauteur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Height, Mode=TwoWay}" Width="200"/>
-            
-            <!-- Largeur -->
-            <TextBlock Text="Largeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Width, Mode=TwoWay}" Width="200"/>
-            
-            <!-- Profondeur -->
-            <TextBlock Text="Profondeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Depth, Mode=TwoWay}" Width="200"/>
-            
-            <!-- Nombre de portes -->
-            <TextBlock Text="Nombre de portes (max.10)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-            <controls:NumericUpDown Minimum="0" Maximum="10" Increment="1" Value="{Binding DoorCount, Mode=TwoWay}" Width="200"/>
-            
-            <!-- Nombre d'étagères -->
-            <TextBlock Text="Nombre d'étagères (max.10)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-            <controls:NumericUpDown Minimum="0" Maximum="10" Increment="1" Value="{Binding ShelfCount, Mode=TwoWay}" Width="200"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <!-- Première colonne pour les champs -->
+                <ColumnDefinition Width="*"/>
+                <!-- Deuxième colonne pour l'image -->
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
 
-            <!-- Liste des portes -->
-            <ItemsControl ItemsSource="{Binding DoorSelectionList}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <!-- Binding sur les propriétés 'Name' et 'IsSelected' -->
-                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Foreground="Black" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+            <!-- Champs (Hauteur, Largeur, Profondeur) -->
+            <StackPanel Margin="0,10,0,0" HorizontalAlignment="Left" Grid.Column="0">
+                <TextBlock Text="Hauteur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Height, Mode=TwoWay}" Width="100"/>
+                
+                <TextBlock Text="Largeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Width, Mode=TwoWay}" Width="100"/>
+                
+                <TextBlock Text="Profondeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Depth, Mode=TwoWay}" Width="100"/>
+
+                <Button Content="Save Order" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center"
+                        Margin="0,20,0,0" 
+                        Width="100" 
+                        Command="{Binding SaveCommand}" 
+                        BorderBrush="Black" 
+                        BorderThickness="3" 
+                        Background="Red" 
+                        Foreground="White" />
+            </StackPanel>
+
+            <!-- Image -->
+            <Image Source="avares://Kitbox/Assets/Cabinet.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="200" Grid.Column="1"/>
+        </Grid>
     </Grid>
 </UserControl>
