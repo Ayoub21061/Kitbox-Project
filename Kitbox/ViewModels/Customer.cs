@@ -1,23 +1,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Kitbox.Models
-{
-    public partial class Customer : ObservableObject
-    {
-        [ObservableProperty]
-        private string id;
 
-        [ObservableProperty]
-        private string email;
-        public Customer() // Constructeur par défaut qui initialise Id et Email avec string.Empty.
+namespace Kitbox.ViewModels
+{
+    [ObservableObject]
+    public partial class Customer : User
+    {
+
+        public Customer(string newUsername, string newPassword, string newEmail) // Constructeur qui initialise l'objet Customer avec les valeurs passées en paramètre. Pour créer un client directement avec Id et email.
         {
-            Id = string.Empty;
-            Email = string.Empty;
-        }
-        public Customer(string id, string email) // Constructeur qui initialise Id et Email avec les valeurs passées en paramètre. Pour créer un client directement avec Id et email.
-        {
-            Id = id;
-            Email = email;
+            this.username = newUsername;
+            this.email = newEmail;
+            this.password = newPassword;
+            this.windowId = 2; // 2 est l'Id de la fenêtre de l'interface graphique pour les clients.
         }
     }
 }
