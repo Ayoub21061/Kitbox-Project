@@ -2,13 +2,14 @@ using System;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Pong.ViewModels;
 
-public partial class Seller{
+
+public partial class Seller
+{
     public string email;
     public enum Status {totalypaid, partiallypaid, notpaid};
     public Status status;
-    public 
+    public int priceproduct ; 
 
     public Seller(string email, Status status){
         this.email = email;
