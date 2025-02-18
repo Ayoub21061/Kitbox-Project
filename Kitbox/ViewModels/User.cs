@@ -8,6 +8,6 @@ namespace Kitbox.ViewModels
 {
     public abstract class User
     {
-        protected string username;
+    
     }
 }

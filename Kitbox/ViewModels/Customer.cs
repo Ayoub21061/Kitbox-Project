@@ -5,19 +5,42 @@ namespace Kitbox.Models
     public partial class Customer : ObservableObject
     {
         [ObservableProperty]
-        private string id;
+        private int height;
 
         [ObservableProperty]
-        private string email;
-        public Customer() // Constructeur par défaut qui initialise Id et Email avec string.Empty.
+        private int width;
+
+        [ObservableProperty]
+        private int depth;
+
+        [ObservableProperty]
+        private int doorCount;
+
+        [ObservableProperty]
+        private int shelfCount;
+
+        [ObservableProperty]
+        private string color;
+
+        public Customer() // Constructeur par défaut 
         {
-            Id = string.Empty;
-            Email = string.Empty;
+            Height = 0;
+            Width = 0;
+            Depth = 0;
+            DoorCount = 0;
+            ShelfCount = 0;
+            Color = "Blanc";
         }
-        public Customer(string id, string email) // Constructeur qui initialise Id et Email avec les valeurs passées en paramètre. Pour créer un client directement avec Id et email.
+        public Customer(int height, int width, int depth, int doorCount, int shelfCount, string color) 
         {
-            Id = id;
-            Email = email;
+            Height = height;
+            Width = width;
+            Depth = depth;
+            DoorCount = doorCount;
+            ShelfCount = shelfCount;
+            Color = color;
         }
+
+        
     }
 }

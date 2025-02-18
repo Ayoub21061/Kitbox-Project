@@ -1,27 +1,54 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Kitbox.ViewModels"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
              x:Class="Kitbox.Views.CustomerView"
              x:DataType="vm:CustomerViewModel">
 
     <Grid Background="White">
-        <!-- Définition des lignes dans la grille -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- La barre bleue prend la hauteur de son contenu -->
-            <RowDefinition Height="*"/>    <!-- Le reste de l'espace est occupé par les champs de texte -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Barre d'entête bleue -->
         <Border Background="Red" Height="50" HorizontalAlignment="Stretch" Grid.Row="0">
             <TextBlock Text="Welcome to Kitbox's App" Foreground="White"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        FontSize="18" FontWeight="Bold"/>
         </Border>
 
-        <!-- Contenu principal en dessous de la barre bleue -->
-        <StackPanel Margin="0,10,100,0" Grid.Row="1">
-            <TextBox Watermark="Identifiant du client" Text="{Binding Customer.Id, Mode=TwoWay}"/>
-            <TextBox Watermark="Email du client" Text="{Binding Customer.Email, Mode=TwoWay}" Margin="0,10,0,0"/>
+        <StackPanel Margin="0,10,100,0" Grid.Row="1" HorizontalAlignment="Left">
+            <!-- Hauteur -->
+            <TextBlock Text="Hauteur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Height, Mode=TwoWay}" Width="200"/>
+            
+            <!-- Largeur -->
+            <TextBlock Text="Largeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Width, Mode=TwoWay}" Width="200"/>
+            
+            <!-- Profondeur -->
+            <TextBlock Text="Profondeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+            <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Depth, Mode=TwoWay}" Width="200"/>
+            
+            <!-- Nombre de portes -->
+            <TextBlock Text="Nombre de portes (max.10)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+            <controls:NumericUpDown Minimum="0" Maximum="10" Increment="1" Value="{Binding DoorCount, Mode=TwoWay}" Width="200"/>
+            
+            <!-- Nombre d'étagères -->
+            <TextBlock Text="Nombre d'étagères (max.10)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
+            <controls:NumericUpDown Minimum="0" Maximum="10" Increment="1" Value="{Binding ShelfCount, Mode=TwoWay}" Width="200"/>
+
+            <!-- Liste des portes -->
+            <ItemsControl ItemsSource="{Binding DoorSelectionList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <!-- Binding sur les propriétés 'Name' et 'IsSelected' -->
+                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Foreground="Black" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </Grid>
 </UserControl>
