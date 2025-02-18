@@ -1,8 +1,7 @@
-﻿namespace Kitbox.ViewModels;
-
-public partial class MainWindowViewModel : ViewModelBase
+﻿namespace Kitbox.ViewModels
 {
-#pragma warning disable CA1822 // Mark members as static
-    public string Greeting => "Welcome to Avalonia!";
-#pragma warning restore CA1822 // Mark members as static
+    public class MainWindowViewModel
+    {
+        public CustomerViewModel CustomerViewModel { get; } = new CustomerViewModel();
+    }
 }
