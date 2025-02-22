@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Models;
+using Kitbox.Views;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -24,6 +25,8 @@ namespace Kitbox.ViewModels
         // Commande de sauvegarde
         public IRelayCommand SaveCommand { get; }
 
+        public IRelayCommand NextPageCommand { get; }
+
         public CustomerViewModel()
         {
             Customer = new Customer();
@@ -33,6 +36,8 @@ namespace Kitbox.ViewModels
 
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
+            // Ajout de la commande pour ouvrir la page suivante
+            NextPageCommand = new RelayCommand(OpenNextPage); 
         }
 
         // Méthode pour sauvegarder les données du client
@@ -58,6 +63,12 @@ namespace Kitbox.ViewModels
                 // Gérer les erreurs lors de la sauvegarde
                 Console.WriteLine($"Erreur de sauvegarde : {ex.Message}");
             }
+        }
+
+        private void OpenNextPage()
+        {
+            var SecondPage = new SecondPageView();
+            SecondPage.Show();
         }
     }
 }
