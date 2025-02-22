@@ -1,3 +1,4 @@
+using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Models;
@@ -25,7 +26,8 @@ namespace Kitbox.ViewModels
         // Commande de sauvegarde
         public IRelayCommand SaveCommand { get; }
 
-        public IRelayCommand NextPageCommand { get; }
+        // Ajout de commandes pour ouvrir les pages suivantes
+        public IRelayCommand SecondPageCommand { get; }
 
         public CustomerViewModel()
         {
@@ -37,7 +39,7 @@ namespace Kitbox.ViewModels
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
             // Ajout de la commande pour ouvrir la page suivante
-            NextPageCommand = new RelayCommand(OpenNextPage); 
+            SecondPageCommand = new RelayCommand(SecondNextPage); 
         }
 
         // Méthode pour sauvegarder les données du client
@@ -65,10 +67,11 @@ namespace Kitbox.ViewModels
             }
         }
 
-        private void OpenNextPage()
+        private void SecondNextPage()
         {
             var SecondPage = new SecondPageView();
             SecondPage.Show();
         }
+
     }
 }

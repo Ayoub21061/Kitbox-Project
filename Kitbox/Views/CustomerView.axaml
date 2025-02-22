@@ -22,32 +22,52 @@
         <!-- Contenu principal -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/> <!-- Première colonne pour les champs -->
-                <ColumnDefinition Width="200"/> <!-- Deuxième colonne pour l'image -->
+                <ColumnDefinition Width="Auto"/> <!-- Première colonne pour les champs -->
+                <ColumnDefinition Width="*"/>    <!-- Deuxième colonne pour l'image -->
             </Grid.ColumnDefinitions>
 
-            <!-- Champs (Hauteur, Largeur, Profondeur) -->
-            <StackPanel Margin="0,10,0,0" HorizontalAlignment="Left" Grid.Column="0">
-                <TextBlock Text="Hauteur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Height, Mode=TwoWay}" Width="100"/>
-                
-                <TextBlock Text="Largeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Width, Mode=TwoWay}" Width="100"/>
-                
-                <TextBlock Text="Profondeur (cm)" Foreground="Black" Margin="0,10,0,0" FontWeight="Bold"/>
-                <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Depth, Mode=TwoWay}" Width="100"/>
+            <!-- Bordure englobant les textes et les champs -->
+            <Border BorderBrush="Black" BorderThickness="2" Grid.Column="0" Margin="10" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <!-- Colonne pour les labels -->
+                        <ColumnDefinition Width="150"/>  <!-- Colonne pour les champs numériques -->
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/> <!-- Pour le bouton -->
+                    </Grid.RowDefinitions>
 
-                <Button Content="Save Order" 
-                        HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Margin="0,20,0,0" 
-                        Width="100" 
-                        Command="{Binding SaveCommand}" 
-                        BorderBrush="Black" 
-                        BorderThickness="3" 
-                        Background="Red" 
-                        Foreground="White" />
-            </StackPanel>
+                    <!-- Hauteur -->
+                    <TextBlock Text="Hauteur (cm)" Foreground="Black" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Margin="0,5,10,5" VerticalAlignment="Center"/>
+                    <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Height, Mode=TwoWay}" Width="100" Grid.Row="0" Grid.Column="1"/>
+
+                    <!-- Largeur -->
+                    <TextBlock Text="Largeur (cm)" Foreground="Black" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Margin="0,5,10,5" VerticalAlignment="Center"/>
+                    <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Width, Mode=TwoWay}" Width="100" Grid.Row="1" Grid.Column="1"/>
+
+                    <!-- Profondeur -->
+                    <TextBlock Text="Profondeur (cm)" Foreground="Black" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Margin="0,5,10,5" VerticalAlignment="Center"/>
+                    <controls:NumericUpDown Minimum="0" Maximum="300" Increment="1" Value="{Binding Depth, Mode=TwoWay}" Width="100" Grid.Row="2" Grid.Column="1"/>
+
+                    <!-- Bouton Save -->
+                    <Button Content="Save Order" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center"
+                            Margin="0,15,0,0" 
+                            Width="100" 
+                            Command="{Binding SaveCommand}" 
+                            BorderBrush="Black" 
+                            BorderThickness="3" 
+                            Background="Red" 
+                            Foreground="White" 
+                            Grid.Row="3"
+                            Grid.ColumnSpan="2"/>
+                </Grid>
+            </Border>
 
             <!-- Image -->
             <Image Source="avares://Kitbox/Assets/Cabinet.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="200" Grid.Column="1"/>
@@ -58,14 +78,12 @@
             <Button Content="Next Page"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Margin="0,0,20,20"
-                    Width="120"
-                    Height="40"
-                    Command="{Binding NextPageCommand}"
+                    Margin="0,10,10,10"
+                    Command="{Binding SecondPageCommand}"
                     BorderBrush="Black"
                     BorderThickness="3"
                     Background="Red"
-                    Foreground="White"/>
+                    Foreground="White" />
         </Grid>
     </Grid>
 </UserControl>
