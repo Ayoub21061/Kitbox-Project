@@ -23,6 +23,12 @@ namespace Kitbox.ViewModels
         [ObservableProperty]
         private int depth;
 
+        [ObservableProperty]
+        private int lockers;
+
+        [ObservableProperty]
+        private string? confirm;
+
         // Commande de sauvegarde
         public IRelayCommand SaveCommand { get; }
 
@@ -37,6 +43,7 @@ namespace Kitbox.ViewModels
             Height = 0;
             Width = 0;
             Depth = 0;
+            Lockers = 0;
 
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
@@ -62,6 +69,10 @@ namespace Kitbox.ViewModels
                 // Sauvegarder les données dans un fichier JSON
                 string jsonString = JsonSerializer.Serialize(customerData);
                 File.WriteAllText(filePath, jsonString);
+
+                // Afficher un message de confirmation
+                Confirm = "Data successfully saved!";
+                
             }
             catch (Exception ex)
             {

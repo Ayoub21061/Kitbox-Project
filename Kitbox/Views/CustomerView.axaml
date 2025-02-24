@@ -39,6 +39,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/> <!-- Pour le bouton -->
+                        <RowDefinition Height="Auto"/> 
                     </Grid.RowDefinitions>
 
                     <!-- Hauteur -->
@@ -66,6 +67,16 @@
                             Foreground="White" 
                             Grid.Row="3"
                             Grid.ColumnSpan="2"/>
+
+                    <TextBlock Text="{Binding Confirm}" 
+                            Foreground="Black" 
+                            FontWeight="Bold"
+                            Margin="0,50,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Grid.Row="4"
+                            Grid.ColumnSpan="2"/>
+
                 </Grid>
             </Border>
 
