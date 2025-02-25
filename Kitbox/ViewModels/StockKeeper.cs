@@ -8,13 +8,17 @@ using System;
 namespace Kitbox.ViewModels;
 
 
-public abstract class StockKeeper : User
+public class StockKeeper : User
 {
-    
+   
 
    public StockKeeper() {
+
         username = "StockKeeper";
+        password = "Merge42";
+        windowId = 1;
     }
    
+
 
 }
