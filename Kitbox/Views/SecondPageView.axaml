@@ -66,6 +66,11 @@
 
     <Grid Grid.Row="3">
 
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Save Locker"-->
+      <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Next Page"-->
+    </Grid.ColumnDefinitions>
+
       <!-- Bouton placé correctement -->
       <Button Content="Next Page"
               HorizontalAlignment="Right"
@@ -75,7 +80,21 @@
               BorderBrush="Black"
               BorderThickness="3"
               Background="Red"
-              Foreground="White"/>
+              Foreground="White"
+              Grid.Column="1"/>
+
+      <!-- Bouton Save -->
+      <Button Content="Save Lockers" 
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Center"
+              Margin="0,15,0,0" 
+              Width="100" 
+              Command="{Binding SaveCommandWithLocker}" 
+              BorderBrush="Black" 
+              BorderThickness="3" 
+              Background="Red" 
+              Foreground="White" 
+              Grid.Column="0"/>
     </Grid>
   </Grid>
 
