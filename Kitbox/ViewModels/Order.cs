@@ -24,6 +24,7 @@ namespace Kitbox.ViewModels
 
                 _orderDate = value;
             }
+            
         }
 
 
