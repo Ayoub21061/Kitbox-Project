@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Input;  // Assure-toi d'ajouter cette ligne
+using Kitbox.ViewModels;
 
 namespace Kitbox.Views
 {
@@ -7,6 +9,7 @@ namespace Kitbox.Views
         public CustomerView()
         {
             InitializeComponent();
+            DataContext = new CustomerViewModel();
         }
     }
 }
