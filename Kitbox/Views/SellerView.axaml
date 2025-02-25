@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Kitbox.ViewModels"
+             x:Class="Kitbox.Views.SellerView"
+             x:DataType="vm:SellerViewModel">
+             
+
+    <Grid Background="White">
+        <!-- Définition des lignes dans la grille -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- La barre bleue prend la hauteur de son contenu -->
+            <RowDefinition Height="*"/>    <!-- Le reste de l'espace est occupé par les champs de texte -->
+        </Grid.RowDefinitions>
+
+        <!-- Barre d'entête bleue -->
+        <Border Background="Blue" Height="50" HorizontalAlignment="Stretch" Grid.Row="0">
+            <TextBlock Text="Welcome to Kitbox's App" Foreground="White"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontSize="18" FontWeight="Bold"/>
+        </Border>
+
+        <!-- Contenu principal en dessous de la barre bleue -->
+        <StackPanel Margin="0,10,100,0" Grid.Row="1">
+            <TextBox Watermark="Email du vendeur" Text="{Binding Seller.Email, Mode=TwoWay}" />
+            <TextBox Watermark="Prix du produit (€)" Text="{Binding Seller.PriceProduct, Mode=TwoWay}" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -5,16 +5,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Kitbox.ViewModels;
 using System;
 
-namespace Kitbox.ViewModels;
 
-
-public abstract class StockKeeper : User
+namespace Kitbox.ViewModels
 {
-    
-
-   public StockKeeper() {
-        username = "StockKeeper";
+    public class User
+    {
+        public string username { get; set; } = string.Empty;
     }
-   
 
+    public abstract class StockKeeper : AppUser
+    {
+        public StockKeeper()
+        {
+            Username = "StockKeeper";
+        }
+    }
 }
+

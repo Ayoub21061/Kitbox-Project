@@ -2,6 +2,7 @@
 {
     public class MainWindowViewModel
     {
-        public CustomerViewModel CustomerViewModel { get; } = new CustomerViewModel();
+        public SellerViewModel SellerViewModel { get; } = new SellerViewModel();
+        
     }
 }

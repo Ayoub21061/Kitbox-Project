@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Kitbox.ViewModels
 {
-    public abstract class User
+    public abstract class AppUser
     {
-        protected string username;
+        public string Username { get; set; } = string.Empty;
     }
 }

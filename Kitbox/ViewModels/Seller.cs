@@ -2,28 +2,31 @@ using System;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-
-
-public partial class Seller: ObservableObject
+namespace Kitbox.Models
 {
-    [ObservableProperty]
-    public string email;
-    [ObservableProperty]
-    public enum Status {totalypaid, partiallypaid, notpaid};
-    public Status status;
-    public int priceproduct ; 
+    
 
-    public Seller(string email, Status status){
-        this.email = email;
-        this.status = status;
+    public partial class Seller : ObservableObject
+    {
+        [ObservableProperty]
+        private string email = string.Empty;
+
+        [ObservableProperty]
+        
 
         
-         
+        private string priceProduct;
 
-          
+        public Seller() {
+            Email = string.Empty;
+            PriceProduct = string.Empty;
+         }
+
+        public Seller(string email, string priceProduct)
+        {
+            Email = email;
+            PriceProduct = priceProduct;
+            
+        }
     }
-
-
-
-
 }
