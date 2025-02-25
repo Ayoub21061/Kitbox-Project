@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Kitbox.ViewModels;
 
 namespace Kitbox.Views
 {
@@ -7,6 +8,8 @@ namespace Kitbox.Views
         public ThirdPageView()
         {
             InitializeComponent();
+            DataContext = new CustomerViewModel();
+
         }
     }
 }
