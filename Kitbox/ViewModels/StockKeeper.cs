@@ -13,6 +13,7 @@ public class StockKeeper : User
    
 
    public StockKeeper() {
+
         username = "StockKeeper";
         password = "Merge42";
         windowId = 1;

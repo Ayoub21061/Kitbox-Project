@@ -7,12 +7,35 @@ namespace Kitbox.ViewModels
     public partial class Customer : User
     {
 
-        public Customer(string newUsername, string newPassword, string newEmail) // Constructeur qui initialise l'objet Customer avec les valeurs passées en paramètre. Pour créer un client directement avec Id et email.
+        [ObservableProperty]
+        private int height;
+
+        [ObservableProperty]
+        private int width;
+
+        [ObservableProperty]
+        private int depth;
+
+        [ObservableProperty]
+        private int lockers;
+
+
+        public Customer() // Constructeur par défaut 
         {
-            this.username = newUsername;
-            this.email = newEmail;
-            this.password = newPassword;
-            this.windowId = 2; // 2 est l'Id de la fenêtre de l'interface graphique pour les clients.
+            Height = 0;
+            Width = 0;
+            Depth = 0;
+            Lockers = 0;
         }
+        public Customer(int height, int width, int depth, int lockers) 
+        {
+            Height = height;
+            Width = width;
+            Depth = depth;
+            Lockers = lockers;
+
+        }
+
+        
     }
 }

@@ -12,7 +12,5 @@ namespace Kitbox.ViewModels
         protected int windowId = 0;
         
         
-
-
     }
 }
