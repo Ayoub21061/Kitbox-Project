@@ -11,7 +11,7 @@
       <RowDefinition Height="Auto"/> <!-- Entête -->
       <RowDefinition Height="Auto"/> <!-- Message -->
       <RowDefinition Height="*"/> <!-- Contenu principal -->
-      <RowDefinition Height="Auto"/>  <!-- Pied de page pour le bouton Next Page -->
+      <RowDefinition Height="Auto"/>  <!-- Pied de page pour les boutons -->
     </Grid.RowDefinitions>
 
     <!-- Entête -->
@@ -37,20 +37,19 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>   <!-- Première colonne pour le texte -->
         <ColumnDefinition Width="Auto"/>   <!-- Deuxième colonne pour les champs -->
-        <ColumnDefinition Width="*"/>      <!-- Troisième colonne pour le bouton -->
+        <ColumnDefinition Width="*"/>      <!-- Troisième colonne pour l'image -->
       </Grid.ColumnDefinitions>
 
       <!-- Bordure qui englobe le texte "Lockers" et le champ NumericUpDown -->
       <Border BorderBrush="Black" BorderThickness="1" Margin="10,200,0,200" Padding="10" Grid.Column="0" Grid.ColumnSpan="2">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-          <!-- Texte "Lockers" avec une bordure autour -->
           <TextBlock Text="Lockers" 
                      Foreground="Black" 
                      FontWeight="Bold" 
                      VerticalAlignment="Center"
                      HorizontalAlignment="Left" 
                      Margin="0,5"/>
-          <!-- Champ NumericUpDown à côté du texte -->
+
           <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
                                   Value="{Binding Lockers, Mode=TwoWay}" 
                                   Width="100"
@@ -64,14 +63,28 @@
       <Image Source="avares://Kitbox/Assets/Cabinet.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="200" Grid.Column="2"/>
     </Grid>
 
+    <!-- Pied de page pour les boutons -->
     <Grid Grid.Row="3">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Save Locker"-->
+        <ColumnDefinition Width="*"/> <!-- Colonne vide pour espacement -->
+        <ColumnDefinition Width="Auto"/> <!-- Pied de page pour les boutons -->
+      </Grid.ColumnDefinitions>
 
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Save Locker"-->
-      <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Next Page"-->
-    </Grid.ColumnDefinitions>
+      <!-- Bouton "Save Lockers" en bas à gauche -->
+      <Button Content="Save Lockers" 
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Bottom"
+              Margin="10,10,0,10" 
+              Width="120" 
+              Command="{Binding SaveCommandWithLocker}" 
+              BorderBrush="Black" 
+              BorderThickness="3" 
+              Background="Red" 
+              Foreground="White" 
+              Grid.Column="0"/>
 
-      <!-- Bouton placé correctement -->
+      <!-- Bouton "Next Page" en bas à droite -->
       <Button Content="Next Page"
               HorizontalAlignment="Right"
               VerticalAlignment="Bottom"
@@ -81,21 +94,7 @@
               BorderThickness="3"
               Background="Red"
               Foreground="White"
-              Grid.Column="1"/>
-
-      <!-- Bouton Save -->
-      <Button Content="Save Lockers" 
-              HorizontalAlignment="Left" 
-              VerticalAlignment="Center"
-              Margin="0,15,0,0" 
-              Width="100" 
-              Command="{Binding SaveCommandWithLocker}" 
-              BorderBrush="Black" 
-              BorderThickness="3" 
-              Background="Red" 
-              Foreground="White" 
-              Grid.Column="0"/>
+              Grid.Column="2"/>
     </Grid>
   </Grid>
-
 </Window>

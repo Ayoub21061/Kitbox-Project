@@ -33,9 +33,6 @@ namespace Kitbox.ViewModels
         public IRelayCommand SaveCommand { get; }
         public IRelayCommand SaveCommandWithLocker { get; }
 
-        // Variable pour savoir si les données initiales ont été sauvegardées
-        private bool _isInitialDataSaved;
-
         // Ajout de commandes pour ouvrir les pages suivantes
         public IRelayCommand SecondPageCommand { get; }
 
@@ -50,7 +47,6 @@ namespace Kitbox.ViewModels
             Width = 0;
             Depth = 0;
             Lockers = 0;
-            _isInitialDataSaved = false;  // Initialiser à false car les données ne sont pas encore sauvegardées
 
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
@@ -58,25 +54,18 @@ namespace Kitbox.ViewModels
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
-            ThirdPageCommand = new RelayCommand(ThirdNextPage);
+            ThirdPageCommand = new RelayCommand(ThirdNextPage); 
             FourthPageCommand = new RelayCommand(FourthNextPage);
         }
 
-        // Méthode pour sauvegarder les données du client (hauteur, largeur, profondeur)
+        // Méthode pour sauvegarder les données du client (Height, Width, Depth)
         private void SaveCustomerData()
         {
-            if (_isInitialDataSaved)
-            {
-                Confirm = "Les données de dimensions sont déjà sauvegardées et ne peuvent pas être modifiées.";
-                return;  // Si les données sont déjà sauvegardées, ne rien faire
-            }
-
-            var customerData = new
+            var customerData = new 
             {
                 Height = this.Height,
                 Width = this.Width,
-                Depth = this.Depth,
-                Lockers = 0  // Définir locker à 0 initialement
+                Depth = this.Depth
             };
 
             string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
@@ -84,13 +73,11 @@ namespace Kitbox.ViewModels
             try
             {
                 // Sauvegarder les données dans un fichier JSON
-                string jsonString = JsonSerializer.Serialize(customerData);
+                string jsonString = JsonSerializer.Serialize(customerData, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(filePath, jsonString);
 
-                // Indiquer que les données ont été sauvegardées
-                _isInitialDataSaved = true;
-                Confirm = "Les données de dimensions ont été sauvegardées avec succès!";
-
+                // Afficher un message de confirmation
+                Confirm = "Data successfully saved!";
             }
             catch (Exception ex)
             {
@@ -99,46 +86,39 @@ namespace Kitbox.ViewModels
             }
         }
 
-        // Méthode pour sauvegarder les données du client avec les lockers
-        // Méthode pour sauvegarder les données du client avec les lockers
-        private void SaveCustomerDataWithLocker()
+        // Méthode pour sauvegarder les données du client avec Lockers
+        private void SaveCustomerDataWithLocker() 
         {
-            if (!_isInitialDataSaved)
-            {
-                Confirm = "Veuillez d'abord sauvegarder les dimensions avant de sauvegarder les lockers.";
-                return; // Empêcher la sauvegarde des lockers tant que les dimensions ne sont pas sauvegardées
-            }
-
-            var customerData = new
-            {
-                Lockers = this.Lockers
-            };
-
             string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
-
             try
             {
-                // Lire les données existantes depuis le fichier
-                string jsonString = File.ReadAllText(filePath);
-
-                // Vérification de si le fichier est vide ou si les données sont nulles
-                var existingData = string.IsNullOrEmpty(jsonString)
-                    ? new Dictionary<string, object>()
-                    : JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
-
-                if (existingData == null)
+                // Lire les données précédemment sauvegardées pour Height, Width, Depth
+                if (File.Exists(filePath))
                 {
-                    existingData = new Dictionary<string, object>(); // Créer un nouveau dictionnaire si le fichier est vide ou si la désérialisation échoue
+                    string jsonString = File.ReadAllText(filePath);
+                    var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+
+                    // Vérifiez si les données de dimensions existent
+                    if (existingData != null && existingData.ContainsKey("Height") && existingData.ContainsKey("Width") && existingData.ContainsKey("Depth"))
+                    {
+                        // Mettre à jour les données avec la valeur de Lockers
+                        existingData["Lockers"] = this.Lockers;
+
+                        // Sauvegarder les données mises à jour
+                        string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                        File.WriteAllText(filePath, updatedJsonString);
+
+                        Confirm = "Data with Lockers successfully saved!";
+                    }
+                    else
+                    {
+                        Confirm = "Please save dimensions first!";
+                    }
                 }
-
-                // Mettre à jour la valeur du locker dans les données existantes
-                existingData["Lockers"] = this.Lockers;
-
-                // Sauvegarder à nouveau les données dans un fichier JSON
-                string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(filePath, updatedJsonString);
-
-                Confirm = "Les lockers ont été sauvegardés avec succès!";
+                else
+                {
+                    Confirm = "No previous data found. Please save dimensions first!";
+                }
             }
             catch (Exception ex)
             {
