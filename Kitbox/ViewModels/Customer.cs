@@ -1,9 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Kitbox.Models
+
+namespace Kitbox.ViewModels
 {
-    public partial class Customer : ObservableObject
+    [ObservableObject]
+    public partial class Customer : User
     {
+
         [ObservableProperty]
         private int height;
 
@@ -30,6 +33,7 @@ namespace Kitbox.Models
             Width = width;
             Depth = depth;
             Lockers = lockers;
+
         }
 
         
