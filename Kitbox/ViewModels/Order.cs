@@ -14,18 +14,7 @@ namespace Kitbox.ViewModels
         public string CustomerMail { get; protected set; } 
         protected string _orderDate;
         protected static readonly Regex DateRegex = new Regex(@"^\d{2}/\d{2}/\d{4}$");
-        public string OrderDate
-        {
-            get => _orderDate;
-            set
-            {
-                if (!DateRegex.IsMatch(value))
-                    throw new ArgumentException("Format de date invalide. Utilisez dd/MM/yyyy.");
-
-                _orderDate = value;
-            }
-            
-        }
+        public DateTime OrderDate {get; protected set;}
 
 
         public enum OrderStatusEnum { Awaiting_Stock, In_Progress, Saved, Ready_To_Go, Done}
@@ -37,14 +26,14 @@ namespace Kitbox.ViewModels
         public decimal TotalAmount { get; protected set; } 
 
         public List<Product> Items { get; } = new List<Product>();
-        protected Order(int orderId, string customerMail, string orderDate, decimal totalAmount)
+        protected Order(int orderId, string customerMail, DateTime orderDate, decimal totalAmount)
         {
             OrderId = orderId;
             CustomerMail = customerMail;
             OrderDate = orderDate;
             TotalAmount = totalAmount;
-            OrderStatus = OrderStatusEnum.Pending; // Par défaut
-            PaymentStatus = PaymentStatusEnum.Pending; // Par défaut
+            OrderStatus = OrderStatusEnum.Saved; // Par défaut
+            PaymentStatus = PaymentStatusEnum.Unpaid; // Par défaut
         }
 
 
