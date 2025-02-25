@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Bordure englobant les textes et les champs -->
-            <Border BorderBrush="Black" BorderThickness="2" Grid.Column="0" Margin="10" Padding="10">
+            <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="10,100,0,100" Padding="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/> <!-- Colonne pour les labels -->
