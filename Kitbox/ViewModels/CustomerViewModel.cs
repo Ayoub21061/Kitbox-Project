@@ -36,6 +36,8 @@ namespace Kitbox.ViewModels
 
         public IRelayCommand ThirdPageCommand { get; }
 
+        public IRelayCommand FourthPageCommand { get; }
+
         public CustomerViewModel()
         {
             Customer = new Customer();
@@ -49,6 +51,7 @@ namespace Kitbox.ViewModels
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
             ThirdPageCommand = new RelayCommand(ThirdNextPage); 
+            FourthPageCommand = new RelayCommand(FourthNextPage);
         }
 
         // Méthode pour sauvegarder les données du client
@@ -90,6 +93,12 @@ namespace Kitbox.ViewModels
         {
             var ThirdPage = new ThirdPageView();
             ThirdPage.Show();
+        }
+
+        private void FourthNextPage()
+        {
+            var FourthPage = new FourthPageView();
+            FourthPage.Show();
         }
 
     }
