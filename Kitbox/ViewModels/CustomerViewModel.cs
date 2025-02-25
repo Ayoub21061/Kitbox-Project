@@ -1,7 +1,6 @@
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Kitbox.Models;
 using Kitbox.Views;
 using System;
 using System.IO;
