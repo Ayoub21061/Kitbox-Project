@@ -51,9 +51,12 @@ namespace Kitbox.ViewModels
             Width = 0;
             Depth = 0;
             Lockers = 0;
+<<<<<<< HEAD
 
             LockersList = new ObservableCollection<LockerViewModel>();
             LoadLockers();
+=======
+>>>>>>> main
 
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
@@ -61,14 +64,18 @@ namespace Kitbox.ViewModels
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
-            ThirdPageCommand = new RelayCommand(ThirdNextPage);
+            ThirdPageCommand = new RelayCommand(ThirdNextPage); 
             FourthPageCommand = new RelayCommand(FourthNextPage);
         }
 
         // Méthode pour sauvegarder les données du client (Height, Width, Depth)
         private void SaveCustomerData()
         {
+<<<<<<< HEAD
             var customerData = new
+=======
+            var customerData = new 
+>>>>>>> main
             {
                 Height = this.Height,
                 Width = this.Width,
@@ -94,6 +101,7 @@ namespace Kitbox.ViewModels
         }
 
         // Méthode pour sauvegarder les données du client avec Lockers
+<<<<<<< HEAD
         private void SaveCustomerDataWithLocker()
         {
             string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
@@ -168,6 +176,39 @@ namespace Kitbox.ViewModels
                             Console.WriteLine("La valeur de Lockers n'est pas un nombre.");
                         }
                     }
+=======
+        private void SaveCustomerDataWithLocker() 
+        {
+            string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
+            try
+            {
+                // Lire les données précédemment sauvegardées pour Height, Width, Depth
+                if (File.Exists(filePath))
+                {
+                    string jsonString = File.ReadAllText(filePath);
+                    var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+
+                    // Vérifiez si les données de dimensions existent
+                    if (existingData != null && existingData.ContainsKey("Height") && existingData.ContainsKey("Width") && existingData.ContainsKey("Depth"))
+                    {
+                        // Mettre à jour les données avec la valeur de Lockers
+                        existingData["Lockers"] = this.Lockers;
+
+                        // Sauvegarder les données mises à jour
+                        string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                        File.WriteAllText(filePath, updatedJsonString);
+
+                        Confirm = "Data with Lockers successfully saved!";
+                    }
+                    else
+                    {
+                        Confirm = "Please save dimensions first!";
+                    }
+                }
+                else
+                {
+                    Confirm = "No previous data found. Please save dimensions first!";
+>>>>>>> main
                 }
             }
             catch (Exception ex)
