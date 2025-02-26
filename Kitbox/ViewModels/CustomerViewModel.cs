@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 
@@ -40,6 +41,9 @@ namespace Kitbox.ViewModels
 
         public IRelayCommand FourthPageCommand { get; }
 
+        public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
+
+
         public CustomerViewModel()
         {
             Customer = new Customer();
@@ -48,20 +52,23 @@ namespace Kitbox.ViewModels
             Depth = 0;
             Lockers = 0;
 
+            LockersList = new ObservableCollection<LockerViewModel>();
+            LoadLockers();
+
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
             // Commande avec les lockers
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
-            ThirdPageCommand = new RelayCommand(ThirdNextPage); 
+            ThirdPageCommand = new RelayCommand(ThirdNextPage);
             FourthPageCommand = new RelayCommand(FourthNextPage);
         }
 
         // Méthode pour sauvegarder les données du client (Height, Width, Depth)
         private void SaveCustomerData()
         {
-            var customerData = new 
+            var customerData = new
             {
                 Height = this.Height,
                 Width = this.Width,
@@ -87,7 +94,7 @@ namespace Kitbox.ViewModels
         }
 
         // Méthode pour sauvegarder les données du client avec Lockers
-        private void SaveCustomerDataWithLocker() 
+        private void SaveCustomerDataWithLocker()
         {
             string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
             try
@@ -126,6 +133,49 @@ namespace Kitbox.ViewModels
                 Console.WriteLine($"Erreur de sauvegarde : {ex.Message}");
             }
         }
+
+        private void LoadLockers()
+        {
+            string filePath = "customer_data.json";
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string jsonString = File.ReadAllText(filePath);
+                    var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
+
+                    if (existingData != null && existingData.ContainsKey("Lockers"))
+                    {
+                        // Assure-toi de vérifier et de convertir correctement le JsonElement en int
+                        if (existingData["Lockers"].ValueKind == JsonValueKind.Number)
+                        {
+                            Lockers = existingData["Lockers"].GetInt32();
+
+                            // Créer des objets LockerViewModel en fonction de la valeur de Lockers
+                            LockersList.Clear();  // Vide la liste précédente si nécessaire
+
+                            for (int i = 0; i < Lockers; i++)
+                            {
+                                // Crée un nouvel objet LockerViewModel pour chaque locker
+                                var locker = new LockerViewModel();
+                                LockersList.Add(locker);
+                            }
+                        }
+                        else
+                        {
+                            // Gérer le cas où la valeur de "Lockers" n'est pas un nombre
+                            Console.WriteLine("La valeur de Lockers n'est pas un nombre.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
+            }
+        }
+
 
         private void SecondNextPage()
         {
