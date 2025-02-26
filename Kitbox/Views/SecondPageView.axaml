@@ -49,10 +49,6 @@
                      VerticalAlignment="Center"
                      HorizontalAlignment="Left" 
                      Margin="0,5"/>
-<<<<<<< HEAD
-=======
-
->>>>>>> main
           <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
                                   Value="{Binding Lockers, Mode=TwoWay}" 
                                   Width="100"
@@ -71,11 +67,7 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Save Locker"-->
         <ColumnDefinition Width="*"/> <!-- Colonne vide pour espacement -->
-<<<<<<< HEAD
         <ColumnDefinition Width="Auto"/> <!-- Colonne pour le bouton "Next Page"-->
-=======
-        <ColumnDefinition Width="Auto"/> <!-- Pied de page pour les boutons -->
->>>>>>> main
       </Grid.ColumnDefinitions>
 
       <!-- Bouton "Save Lockers" en bas à gauche -->
