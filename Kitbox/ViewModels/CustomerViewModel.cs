@@ -61,7 +61,7 @@ namespace Kitbox.ViewModels
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
-            ThirdPageCommand = new RelayCommand(ThirdNextPage); 
+            ThirdPageCommand = new RelayCommand(ThirdNextPage);
             FourthPageCommand = new RelayCommand(FourthNextPage);
         }
 
@@ -143,30 +143,34 @@ namespace Kitbox.ViewModels
                 if (File.Exists(filePath))
                 {
                     string jsonString = File.ReadAllText(filePath);
+
+                    // Désérialisation des données existantes
                     var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
 
-                    if (existingData != null && existingData.ContainsKey("Lockers"))
+                    if (existingData != null)
                     {
-                        // Assure-toi de vérifier et de convertir correctement le JsonElement en int
-                        if (existingData["Lockers"].ValueKind == JsonValueKind.Number)
+                        // Vérifier si la clé "Lockers" existe et est un nombre
+                        if (existingData.ContainsKey("Lockers") && existingData["Lockers"].ValueKind == JsonValueKind.Number)
                         {
-                            Lockers = existingData["Lockers"].GetInt32();
-
-                            // Créer des objets LockerViewModel en fonction de la valeur de Lockers
-                            LockersList.Clear();  // Vide la liste précédente si nécessaire
+                            Lockers = existingData["Lockers"].GetInt32();  // Récupère la valeur de Lockers
+                            LockersList.Clear();  // Vide la liste des lockers avant d'ajouter les nouveaux
 
                             for (int i = 0; i < Lockers; i++)
                             {
                                 // Crée un nouvel objet LockerViewModel pour chaque locker
                                 var locker = new LockerViewModel();
-                                LockersList.Add(locker);
+                                LockersList.Add(locker); // Ajoute à la liste
                             }
                         }
                         else
                         {
-                            // Gérer le cas où la valeur de "Lockers" n'est pas un nombre
-                            Console.WriteLine("La valeur de Lockers n'est pas un nombre.");
+                            // Si "Lockers" n'est pas un nombre ou est manquant, afficher une erreur
+                            Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Les données existantes sont vides ou mal formatées.");
                     }
                 }
             }
@@ -175,7 +179,6 @@ namespace Kitbox.ViewModels
                 Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
             }
         }
-
 
         private void SecondNextPage()
         {
