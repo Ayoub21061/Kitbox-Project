@@ -135,49 +135,93 @@ namespace Kitbox.ViewModels
         }
 
         private void LoadLockers()
+{
+    string filePath = "customer_data.json";
+
+    try
+    {
+        if (File.Exists(filePath))
         {
-            string filePath = "customer_data.json";
+            string jsonString = File.ReadAllText(filePath);
 
-            try
+            // Désérialisation des données existantes
+            var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
+
+            if (existingData != null)
             {
-                if (File.Exists(filePath))
+                // Vérifier si la clé "Lockers" existe et est un nombre
+                if (existingData.ContainsKey("Lockers") && existingData["Lockers"].ValueKind == JsonValueKind.Number)
                 {
-                    string jsonString = File.ReadAllText(filePath);
+                    Lockers = existingData["Lockers"].GetInt32();  // Récupère la valeur de Lockers
+                    LockersList.Clear();  // Vide la liste des lockers avant d'ajouter les nouveaux
 
-                    // Désérialisation des données existantes
-                    var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
-
-                    if (existingData != null)
+                    for (int i = 0; i < Lockers; i++)
                     {
-                        // Vérifier si la clé "Lockers" existe et est un nombre
-                        if (existingData.ContainsKey("Lockers") && existingData["Lockers"].ValueKind == JsonValueKind.Number)
-                        {
-                            Lockers = existingData["Lockers"].GetInt32();  // Récupère la valeur de Lockers
-                            LockersList.Clear();  // Vide la liste des lockers avant d'ajouter les nouveaux
-
-                            for (int i = 0; i < Lockers; i++)
-                            {
-                                // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
-                                var locker = new LockerViewModel(i);
-                                LockersList.Add(locker); // Ajoute à la liste
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Les données existantes sont vides ou mal formatées.");
+                        // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
+                        var locker = new LockerViewModel(i, this);
+                        LockersList.Add(locker); // Ajoute à la liste
                     }
                 }
+                else
+                {
+                    Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
+                Console.WriteLine("Les données existantes sont vides ou mal formatées.");
             }
         }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
+    }
+}
+
+        public void DeleteLocker(int lockerIndex)
+{
+    try
+    {
+        string filePath = "customer_data.json";
+        if (!File.Exists(filePath)) return;
+
+        string existingJson = File.ReadAllText(filePath);
+        var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? new Dictionary<string, object>();
+
+        if (existingData.ContainsKey("LockersData"))
+        {
+            var lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(JsonSerializer.Serialize(existingData["LockersData"])) ?? new List<Dictionary<string, object>>();
+
+            // Supprimer le locker par index
+            if (lockerIndex >= 0 && lockerIndex < lockersList.Count)
+            {
+                lockersList.RemoveAt(lockerIndex);
+
+                // Mettre à jour les données existantes avec les nouvelles informations
+                existingData["LockersData"] = lockersList;
+                existingData["Lockers"] = lockersList.Count;
+
+                // Sauvegarder les données mises à jour
+                string newJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filePath, newJson);
+
+                // Supprimer l'objet LockerViewModel correspondant
+                LockersList.RemoveAt(lockerIndex);
+
+                Console.WriteLine("Locker data successfully deleted!");
+            }
+            else
+            {
+                Console.WriteLine("No matching locker found to delete.");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erreur lors de la suppression : {ex.Message}");
+    }
+}
 
 
 
