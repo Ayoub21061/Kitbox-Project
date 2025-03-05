@@ -68,8 +68,8 @@
                                     <ComboBox SelectedItem="{Binding CouleurPorteSelected}" Grid.Row="3" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center" ItemsSource="{Binding CouleurPorte}" IsVisible="{Binding HasPorte}" />
 
                                     <!-- Matériel de la Porte -->
-                                    <TextBlock Text="Matériel de la porte :" Grid.Row="4" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0"/>
-                                    <ComboBox ItemsSource="{Binding MatérielOptions}" SelectedItem="{Binding MatérielPorte}" Grid.Row="4" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Matériel de la porte :" Grid.Row="4" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0" IsVisible="{Binding HasPorte}"/>
+                                    <ComboBox ItemsSource="{Binding MatérielOptions}" SelectedItem="{Binding MatérielPorte}" Grid.Row="4" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center" IsVisible="{Binding HasPorte}"/>
 
                                     <!-- Espace vide pour pousser le bouton en bas -->
                                     <Grid Grid.Row="5"/>
@@ -85,6 +85,19 @@
                                             BorderThickness="3"
                                             Background="Green"
                                             Foreground="White"/>
+
+                                    <Button Content="Supprimer" 
+                                            Command="{Binding DeleteLockerCommand}" 
+                                            CommandParameter="{Binding LockerIndex}" 
+                                            Grid.Row="6" Grid.Column="1" 
+                                            HorizontalAlignment="Right" 
+                                            VerticalAlignment="Bottom" 
+                                            Margin="0,10,10,10" 
+                                            BorderBrush="Black" 
+                                            BorderThickness="3" 
+                                            Background="Red" 
+                                            Foreground="White"/>
+
                                 </Grid>
                             </Border>
                         </DataTemplate>

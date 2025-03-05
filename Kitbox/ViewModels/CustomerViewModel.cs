@@ -157,14 +157,13 @@ namespace Kitbox.ViewModels
 
                             for (int i = 0; i < Lockers; i++)
                             {
-                                // Crée un nouvel objet LockerViewModel pour chaque locker
-                                var locker = new LockerViewModel();
+                                // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
+                                var locker = new LockerViewModel(i);
                                 LockersList.Add(locker); // Ajoute à la liste
                             }
                         }
                         else
                         {
-                            // Si "Lockers" n'est pas un nombre ou est manquant, afficher une erreur
                             Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
                         }
                     }
@@ -179,6 +178,8 @@ namespace Kitbox.ViewModels
                 Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
             }
         }
+
+
 
         private void SecondNextPage()
         {

@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -10,6 +11,11 @@ namespace Kitbox;
 
 public partial class App : Application
 {
+    internal static object GetViewModel<T>()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
