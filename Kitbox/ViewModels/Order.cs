@@ -12,9 +12,9 @@ namespace Kitbox.ViewModels
     {
         public int OrderId { get; protected set; } 
         public string CustomerMail { get; protected set; } 
-        protected string _orderDate;
+        protected string? _orderDate;
         protected static readonly Regex DateRegex = new Regex(@"^\d{2}/\d{2}/\d{4}$");
-        public DateTime OrderDate {get; protected set;}
+        public DateTime OrderDate {get; protected set;}= DateTime.Now;
 
 
         public enum OrderStatusEnum { Awaiting_Stock, In_Progress, Saved, Ready_To_Go, Done}
