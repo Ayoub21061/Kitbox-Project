@@ -10,6 +10,8 @@ namespace Kitbox.ViewModels;
 
 public partial class LockerViewModel : ObservableObject
 {
+    private readonly CustomerViewModel _customerViewModel;
+
     [ObservableProperty]
     private List<string> couleur; // Liste des couleurs
 
@@ -38,11 +40,11 @@ public partial class LockerViewModel : ObservableObject
 
     public int LockerIndex { get; set; }  // Indice unique pour chaque locker
 
-
-    public LockerViewModel(int index)
+    public LockerViewModel(int index, CustomerViewModel customerViewModel)
     {
+        _customerViewModel = customerViewModel;
         SaveLockersViewCommand = new RelayCommand(SaveLockerData);
-        DeleteLockerCommand = new RelayCommand<int>(DeleteLockerData);
+        DeleteLockerCommand = new RelayCommand(DeleteLockerData);
         Couleur = new List<string> { "Blanc", "Noir", "Gris", "Rose" }; // Liste des couleurs disponibles
         CouleurPorte = new List<string> { "Blanc", "Noir", "Gris" };  // Liste des couleurs de porte
         LockerIndex = index;  // Assigner l'index du locker
@@ -104,44 +106,8 @@ public partial class LockerViewModel : ObservableObject
         }
     }
 
-    private void DeleteLockerData(int lockerIndex)
+    private void DeleteLockerData()
     {
-        try
-        {
-            string filePath = "customer_data.json";
-            if (!File.Exists(filePath)) return;
-
-            string existingJson = File.ReadAllText(filePath);
-            var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? new Dictionary<string, object>();
-
-            if (existingData.ContainsKey("LockersData"))
-            {
-                var lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(JsonSerializer.Serialize(existingData["LockersData"])) ?? new List<Dictionary<string, object>>();
-
-                // Supprimer le locker par index
-                if (lockerIndex >= 0 && lockerIndex < lockersList.Count)
-                {
-                    lockersList.RemoveAt(lockerIndex);
-
-                    // Mettre à jour les données existantes avec les nouvelles informations
-                    existingData["LockersData"] = lockersList;
-                    existingData["Lockers"] = lockersList.Count;
-
-                    // Sauvegarder les données mises à jour
-                    string newJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
-                    File.WriteAllText(filePath, newJson);
-
-                    Console.WriteLine("Locker data successfully deleted!");
-                }
-                else
-                {
-                    Console.WriteLine("No matching locker found to delete.");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erreur lors de la suppression : {ex.Message}");
-        }
+        _customerViewModel.DeleteLocker(LockerIndex);
     }
 }

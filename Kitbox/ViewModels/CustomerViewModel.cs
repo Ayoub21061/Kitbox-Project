@@ -30,9 +30,16 @@ namespace Kitbox.ViewModels
         [ObservableProperty]
         private string? confirm;
 
+        [ObservableProperty]
+        private string? selectedIron;
+
+        public List<string> Iron { get; } = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
+
         // Commande de sauvegarde
         public IRelayCommand SaveCommand { get; }
         public IRelayCommand SaveCommandWithLocker { get; }
+
+        public IRelayCommand SaveCommandWithIron { get; }
 
         // Ajout de commandes pour ouvrir les pages suivantes
         public IRelayCommand SecondPageCommand { get; }
@@ -51,6 +58,7 @@ namespace Kitbox.ViewModels
             Width = 0;
             Depth = 0;
             Lockers = 0;
+            Iron = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
 
             LockersList = new ObservableCollection<LockerViewModel>();
             LoadLockers();
@@ -59,6 +67,8 @@ namespace Kitbox.ViewModels
             SaveCommand = new RelayCommand(SaveCustomerData);
             // Commande avec les lockers
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
+            // Sauvegarde des irons
+            SaveCommandWithIron = new RelayCommand(SaveCustomerDataWithIron);
             // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
             ThirdPageCommand = new RelayCommand(ThirdNextPage);
@@ -134,6 +144,55 @@ namespace Kitbox.ViewModels
             }
         }
 
+        private void SaveCustomerDataWithIron()
+        {
+            string filePath = "customer_data.json"; // Chemin du fichier JSON
+
+            try
+            {
+                Dictionary<string, object> existingData = new Dictionary<string, object>();
+
+                // Vérifier si le fichier existe et récupérer les données existantes
+                if (File.Exists(filePath))
+                {
+                    string jsonString = File.ReadAllText(filePath);
+                    existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString) ?? new Dictionary<string, object>();
+                }
+
+                // Vérifier si les dimensions existent dans le fichier JSON
+                if (existingData.ContainsKey("Height") && existingData.ContainsKey("Width") && existingData.ContainsKey("Depth"))
+                {
+                    // Vérifier si une couleur a été sélectionnée
+                    if (!string.IsNullOrEmpty(this.SelectedIron))
+                    {
+                        // Mettre à jour ou ajouter la couleur sélectionnée
+                        existingData["Iron"] = this.SelectedIron;
+
+                        // Sauvegarder les données mises à jour dans le fichier JSON
+                        string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                        File.WriteAllText(filePath, updatedJsonString);
+
+                        Confirm = $"Iron color '{this.SelectedIron}' successfully saved!";
+                    }
+                    else
+                    {
+                        Confirm = "Please select an iron color before saving!";
+                    }
+                }
+                else
+                {
+                    Confirm = "Please save dimensions first!";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur de sauvegarde : {ex.Message}");
+            }
+        }
+
+
+
+
         private void LoadLockers()
         {
             string filePath = "customer_data.json";
@@ -158,7 +217,7 @@ namespace Kitbox.ViewModels
                             for (int i = 0; i < Lockers; i++)
                             {
                                 // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
-                                var locker = new LockerViewModel(i);
+                                var locker = new LockerViewModel(i, this);
                                 LockersList.Add(locker); // Ajoute à la liste
                             }
                         }
@@ -176,6 +235,50 @@ namespace Kitbox.ViewModels
             catch (Exception ex)
             {
                 Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
+            }
+        }
+
+        public void DeleteLocker(int lockerIndex)
+        {
+            try
+            {
+                string filePath = "customer_data.json";
+                if (!File.Exists(filePath)) return;
+
+                string existingJson = File.ReadAllText(filePath);
+                var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? new Dictionary<string, object>();
+
+                if (existingData.ContainsKey("LockersData"))
+                {
+                    var lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(JsonSerializer.Serialize(existingData["LockersData"])) ?? new List<Dictionary<string, object>>();
+
+                    // Supprimer le locker par index
+                    if (lockerIndex >= 0 && lockerIndex < lockersList.Count)
+                    {
+                        lockersList.RemoveAt(lockerIndex);
+
+                        // Mettre à jour les données existantes avec les nouvelles informations
+                        existingData["LockersData"] = lockersList;
+                        existingData["Lockers"] = lockersList.Count;
+
+                        // Sauvegarder les données mises à jour
+                        string newJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                        File.WriteAllText(filePath, newJson);
+
+                        // Supprimer l'objet LockerViewModel correspondant
+                        LockersList.RemoveAt(lockerIndex);
+
+                        Console.WriteLine("Locker data successfully deleted!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No matching locker found to delete.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la suppression : {ex.Message}");
             }
         }
 
