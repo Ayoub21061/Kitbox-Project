@@ -48,6 +48,8 @@ namespace Kitbox.ViewModels
 
         public IRelayCommand FourthPageCommand { get; }
 
+        public IRelayCommand FifthPageCommand { get; }
+
         public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
 
 
@@ -61,7 +63,7 @@ namespace Kitbox.ViewModels
             Iron = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
 
             LockersList = new ObservableCollection<LockerViewModel>();
-            LoadLockers();
+            LoadCombinedData();
 
             // Initialisation de la commande Save
             SaveCommand = new RelayCommand(SaveCustomerData);
@@ -73,6 +75,7 @@ namespace Kitbox.ViewModels
             SecondPageCommand = new RelayCommand(SecondNextPage);
             ThirdPageCommand = new RelayCommand(ThirdNextPage);
             FourthPageCommand = new RelayCommand(FourthNextPage);
+            FifthPageCommand = new RelayCommand(FifthNextPage);
         }
 
         // Méthode pour sauvegarder les données du client (Height, Width, Depth)
@@ -193,50 +196,57 @@ namespace Kitbox.ViewModels
 
 
 
-        private void LoadLockers()
+        public void LoadCombinedData()
+{
+    string filePath = "customer_data.json"; // Chemin de votre fichier JSON
+
+    if (File.Exists(filePath))
+    {
+        string jsonContent = File.ReadAllText(filePath);
+        var data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+
+        if (data != null)
         {
-            string filePath = "customer_data.json";
+            // Charger les données de base
+            Height = data.ContainsKey("Height") ? data["Height"].GetInt32() : 0;
+            Width = data.ContainsKey("Width") ? data["Width"].GetInt32() : 0;
+            Depth = data.ContainsKey("Depth") ? data["Depth"].GetInt32() : 0;
+            Lockers = data.ContainsKey("Lockers") ? data["Lockers"].GetInt32() : 0;
+            SelectedIron = data.ContainsKey("Iron") ? data["Iron"].GetString() : null;
 
-            try
+            // Réinitialiser la liste des lockers
+            LockersList.Clear();
+            int index = 0;
+
+            // Charger les données existantes de LockersData
+            if (data.ContainsKey("LockersData") && data["LockersData"].ValueKind == JsonValueKind.Array)
             {
-                if (File.Exists(filePath))
+                var lockersData = data["LockersData"].EnumerateArray();
+                foreach (var lockerData in lockersData)
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    // Désérialisation des données existantes
-                    var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
-
-                    if (existingData != null)
+                    var locker = new LockerViewModel(index++, this)
                     {
-                        // Vérifier si la clé "Lockers" existe et est un nombre
-                        if (existingData.ContainsKey("Lockers") && existingData["Lockers"].ValueKind == JsonValueKind.Number)
-                        {
-                            Lockers = existingData["Lockers"].GetInt32();  // Récupère la valeur de Lockers
-                            LockersList.Clear();  // Vide la liste des lockers avant d'ajouter les nouveaux
-
-                            for (int i = 0; i < Lockers; i++)
-                            {
-                                // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
-                                var locker = new LockerViewModel(i, this);
-                                LockersList.Add(locker); // Ajoute à la liste
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Les données existantes sont vides ou mal formatées.");
-                    }
+                        SelectedCouleur = lockerData.TryGetProperty("Couleur", out var couleur) ? couleur.GetString() : "",
+                        Longueur = lockerData.TryGetProperty("Longueur", out var longueur) ? longueur.GetInt32() : 0,
+                        HasPorte = lockerData.TryGetProperty("HasPorte", out var hasPorte) ? hasPorte.GetBoolean() : false,
+                        CouleurPorteSelected = lockerData.TryGetProperty("CouleurPorte", out var couleurPorte) ? couleurPorte.GetString() : "",
+                        MatérielPorte = lockerData.TryGetProperty("MaterielPorte", out var materielPorte) ? materielPorte.GetString() : ""
+                    };
+                    LockersList.Add(locker);
                 }
             }
-            catch (Exception ex)
+
+            // Compléter la liste avec des lockers par défaut si nécessaire
+            while (LockersList.Count < Lockers)
             {
-                Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
+                var locker = new LockerViewModel(index++, this);
+                LockersList.Add(locker);
             }
         }
+    }
+}
+
+
 
         public void DeleteLocker(int lockerIndex)
         {
@@ -300,6 +310,12 @@ namespace Kitbox.ViewModels
         {
             var FourthPage = new FourthPageView();
             FourthPage.Show();
+        }
+
+        private void FifthNextPage()
+        {
+            var FifthPage = new FifthPageView();
+            FifthPage.Show();
         }
     }
 }
