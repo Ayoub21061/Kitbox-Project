@@ -27,6 +27,7 @@ namespace Kitbox.ViewModels
             Width = 0;
             Depth = 0;
             Lockers = 0;
+            windowId = 2;
         }
         public Customer(int height, int width, int depth, int lockers) 
         {
