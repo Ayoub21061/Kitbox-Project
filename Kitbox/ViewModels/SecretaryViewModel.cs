@@ -94,3 +94,4 @@ namespace Kitbox.ViewModels
         }
     }
 }
+
