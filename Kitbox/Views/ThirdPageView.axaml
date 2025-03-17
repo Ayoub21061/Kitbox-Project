@@ -1,25 +1,128 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Kitbox.ViewModels;assembly=Kitbox"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
         x:Class="Kitbox.Views.ThirdPageView"
-        x:DataType="vm:CustomerViewModel"
-        Title="Kitbox's App">
+        Title="Kitbox's App"
+        x:DataType="vm:CustomerViewModel">
 
-  <Grid Background="White">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Entête -->
+            <RowDefinition Height="*"/>  <!-- Contenu principal -->
+            <RowDefinition Height="Auto"/>  <!-- Bouton -->
+        </Grid.RowDefinitions>
 
-    <!-- Entête -->
-    <Border Background="Red" Height="30" HorizontalAlignment="Stretch" Grid.Row="0">
-      <TextBlock Text="Lockers Customization" Foreground="White"
-                 VerticalAlignment="Center" HorizontalAlignment="Center"
-                 FontSize="18" FontWeight="Bold"/>
-    </Border>
+        <!-- Entête -->
+        <Border Background="Red" Height="30" HorizontalAlignment="Stretch" Grid.Row="0">
+            <TextBlock Text="Lockers Customization" Foreground="White"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontSize="18" FontWeight="Bold"/>
+        </Border>
 
-    <!-- Contenu principal -->
-    <Grid Grid.Row="1">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />  <!-- Première colonne -->
+                <ColumnDefinition Width="1*" />  <!-- Deuxième colonne -->
+                <ColumnDefinition Width="Auto" /> <!-- Troisième colonne (libre pour autre chose) -->
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding LockersList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:LockerViewModel">
+                            <Border BorderBrush="Black" BorderThickness="2" Margin="5" Padding="10" Background="LightGray">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/> <!-- Prend tout l'espace restant -->
+                                        <RowDefinition Height="Auto"/> <!-- Bouton en bas -->
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Couleur -->
+                                    <TextBlock Text="Couleur :" Grid.Row="0" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,0,3,0"/>
+                                    <ComboBox SelectedItem="{Binding SelectedCouleur}" 
+                                              Grid.Row="0" Grid.Column="1" Width="100" 
+                                              Background="DarkGray" Foreground="White" 
+                                              VerticalAlignment="Center" 
+                                              ItemsSource="{Binding Couleur}"/>
+
+                                    <!-- Longueur -->
+                                    <TextBlock Text="Longueur :" Grid.Row="1" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <TextBox Text="{Binding Longueur}" Grid.Row="1" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" Padding="3" VerticalAlignment="Center"/>
+
+                                    <!-- Checkbox Porte -->
+                                    <TextBlock Text="Porte :" Grid.Row="2" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <CheckBox IsChecked="{Binding HasPorte}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+
+                                    <!-- Couleur de la Porte -->
+                                    <TextBlock Text="Couleur de la porte :" Grid.Row="3" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0" IsVisible="{Binding HasPorte}"/>
+                                    <ComboBox SelectedItem="{Binding CouleurPorteSelected}" Grid.Row="3" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center" ItemsSource="{Binding CouleurPorte}" IsVisible="{Binding HasPorte}" />
+
+                                    <!-- Matériel de la Porte -->
+                                    <TextBlock Text="Matériel de la porte :" Grid.Row="4" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0" IsVisible="{Binding HasPorte}"/>
+                                    <ComboBox ItemsSource="{Binding MatérielOptions}" SelectedItem="{Binding MatérielPorte}" Grid.Row="4" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center" IsVisible="{Binding HasPorte}"/>
+
+                                    <!-- Espace vide pour pousser le bouton en bas -->
+                                    <Grid Grid.Row="5"/>
+
+                                    <!-- Bouton placé en bas à droite -->
+                                    <Button Content="Save The Locker"
+                                            Grid.Row="6"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Margin="0,10,10,10"
+                                            Command="{Binding SaveLockersViewCommand}"
+                                            BorderBrush="Black"
+                                            BorderThickness="3"
+                                            Background="Green"
+                                            Foreground="White"/>
+
+                                    <Button Content="Supprimer" 
+                                            Command="{Binding DeleteLockerCommand}" 
+                                            CommandParameter="{Binding LockerIndex}" 
+                                            Grid.Row="6" Grid.Column="1" 
+                                            HorizontalAlignment="Right" 
+                                            VerticalAlignment="Bottom" 
+                                            Margin="0,10,10,10" 
+                                            BorderBrush="Black" 
+                                            BorderThickness="3" 
+                                            Background="Red" 
+                                            Foreground="White"/>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Espace libre sur la troisième colonne -->
+            <Border Grid.Column="2" Background="LightGray" Margin="5">
+                <TextBlock Text="Ici, tu peux ajouter autre chose" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <!-- Grid contenant le bouton -->
+        <Grid Grid.Row="2">
+            <Button Content="Next Page"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,10,10,10"
+                    Command="{Binding FourthPageCommand}"
+                    BorderBrush="Black"
+                    BorderThickness="3"
+                    Background="Red"
+                    Foreground="White"/>
+        </Grid>
     </Grid>
-  </Grid>
 </Window>

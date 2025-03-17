@@ -2,11 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Kitbox.ViewModels;assembly=Kitbox"
         xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
-        x:Class="Kitbox.Views.SecondPageView"
+        x:Class="Kitbox.Views.FourthPageView"
         x:DataType="vm:CustomerViewModel"
         Title="Kitbox's App">
 
-  <Grid Background="White">
+        <Grid Background="White">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/> <!-- Entête -->
       <RowDefinition Height="Auto"/> <!-- Message -->
@@ -16,14 +16,14 @@
 
     <!-- Entête -->
     <Border Background="Red" Height="30" HorizontalAlignment="Stretch" Grid.Row="0">
-      <TextBlock Text="Lockers" Foreground="White"
+      <TextBlock Text="Angle Iron" Foreground="White"
                  VerticalAlignment="Center" HorizontalAlignment="Center"
                  FontSize="18" FontWeight="Bold"/>
     </Border>
 
     <!-- Message -->
     <Grid Grid.Row ="1">
-      <TextBlock Text="Please enter the number of lockers you want to order."
+      <TextBlock Text="Enter the color of the irons you want to add to your lockers"
                  Foreground="Black"
                  FontWeight="Bold"
                  VerticalAlignment="Center"
@@ -40,21 +40,21 @@
         <ColumnDefinition Width="*"/>      <!-- Troisième colonne pour l'image -->
       </Grid.ColumnDefinitions>
 
-      <!-- Bordure qui englobe le texte "Lockers" et le champ NumericUpDown -->
+      <!-- Bordure qui englobe le texte "Lockers" et le champ de sélection de couleur-->
       <Border BorderBrush="Black" BorderThickness="1" Margin="10,200,0,200" Padding="10" Grid.Column="0" Grid.ColumnSpan="2">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-          <TextBlock Text="Lockers" 
+          <TextBlock Text="Iron's color" 
                      Foreground="Black" 
                      FontWeight="Bold" 
                      VerticalAlignment="Center"
                      HorizontalAlignment="Left" 
                      Margin="0,5"/>
-          <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
-                                  Value="{Binding Lockers, Mode=TwoWay}" 
-                                  Width="100"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Left" 
-                                  Margin="5,0"/>
+          <ComboBox ItemsSource="{Binding Iron}" 
+                    SelectedItem="{Binding SelectedIron}" 
+                    Width="100"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left" 
+                    Margin="5,0"/>
         </StackPanel>
       </Border>
 
@@ -71,12 +71,12 @@
       </Grid.ColumnDefinitions>
 
       <!-- Bouton "Save Lockers" en bas à gauche -->
-      <Button Content="Save Lockers" 
+      <Button Content="Save the color" 
               HorizontalAlignment="Left" 
               VerticalAlignment="Bottom"
               Margin="10,10,0,10" 
               Width="120" 
-              Command="{Binding SaveCommandWithLocker}" 
+              Command="{Binding SaveCommandWithIron}" 
               BorderBrush="Black" 
               BorderThickness="3" 
               Background="Red" 
@@ -88,7 +88,7 @@
               HorizontalAlignment="Right"
               VerticalAlignment="Bottom"
               Margin="0,10,10,10"
-              Command="{Binding ThirdPageCommand}"
+              
               BorderBrush="Black"
               BorderThickness="3"
               Background="Red"
@@ -96,4 +96,5 @@
               Grid.Column="2"/>
     </Grid>
   </Grid>
+
 </Window>

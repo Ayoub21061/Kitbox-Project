@@ -17,7 +17,7 @@ namespace Kitbox.ViewModels
 
             // Initialize commands
             ShowWindowCommand = new RelayCommand(ExecuteShowWindowCommand);
-            TestNewWindowCommand = new RelayCommand(ExecuteTestNewWindowCommand);
+            
         }
 
         public int UserWindowId
@@ -33,7 +33,7 @@ namespace Kitbox.ViewModels
         }
 
         public IRelayCommand ShowWindowCommand { get; }
-        public IRelayCommand TestNewWindowCommand { get; }
+       
 
         private User GetCurrentUser()
         {
@@ -54,6 +54,11 @@ namespace Kitbox.ViewModels
                     skView.Show();
                     // Logic to show the stock keeper view model
                     break;
+                case 3:
+                    var secretaryView = new SecretaryWindow();
+                    secretaryView.Show();
+                    // Logic to show the secretary view model
+                    break;
                 default:
                     var mainWindow = new MainWindow();
                     mainWindow.Show();
@@ -66,12 +71,8 @@ namespace Kitbox.ViewModels
             ShowViewModel(InputNumber);
         }
 
-        private void ExecuteTestNewWindowCommand()
-        {
-            var second= new SecondPageView();
-            second.Show();
-        }
-
+     
+        public SecretaryViewModel SecretaryViewModel { get; } = new SecretaryViewModel();
 
     }
 }

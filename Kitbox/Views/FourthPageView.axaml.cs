@@ -1,15 +1,15 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Platform;
 using Kitbox.ViewModels;
 
 namespace Kitbox.Views
 {
-    public partial class ThirdPageView : Window
+    public partial class FourthPageView : Window
     {
-        public ThirdPageView()
+        public FourthPageView()
         {
             InitializeComponent();
             DataContext = new CustomerViewModel();
-
         }
     }
 }

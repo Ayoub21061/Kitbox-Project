@@ -9,7 +9,7 @@
 	<StackPanel>
 		<TextBox Text="{Binding InputNumber, Mode=TwoWay}" Width="200" Margin="10"/>
 		<Button Content="Switch Window" Command="{Binding ShowWindowCommand}" Width="200" Margin="10"/>
-		<Button Content="new window" Command="{Binding TestNewWindowCommand}" Background="" Width="200" Margin="10"/>
+		
 	</StackPanel>
 
 </Window>

@@ -24,6 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\SecretaryWindow.axaml.cs">
+      <DependentUpon>SecretaryWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\CustomerWindow.axaml.cs">
       <DependentUpon>CustomerWindow.axaml</DependentUpon>
     </Compile>
