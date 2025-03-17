@@ -2,6 +2,6 @@
 {
     public class MainWindowViewModel
     {
-        public CustomerViewModel CustomerViewModel { get; } = new CustomerViewModel();
+        public SecretaryViewModel CustomerViewModel { get; } = new SecretaryViewModel();
     }
 }

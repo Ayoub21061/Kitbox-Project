@@ -1,66 +1,96 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using Avalonia.Data;
 using Kitbox.Views;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 using System.Linq;
 
 namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private List<Supplier> suppliers = new List<Supplier>(); // Liste des fournisseurs
+        // Instance de la classe Secretary pour accéder à la logique métier
+        private Secretary _secretary = new Secretary(1, "Secretary Name"); 
 
-        [ObservableProperty]
-        private string supplierName;
+        public class Secretary
+{
+    // Liste des fournisseurs
+    public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
 
-        [ObservableProperty]
-        private decimal supplierPrice;
+    // Liste des produits
+    public List<Product> Products { get; private set; } = new List<Product>();
 
-        [ObservableProperty]
-        private int supplierDeliveryDays;
+    // Constructeur avec ID et nom
+    public Secretary(int id, string name)
+    {
+        // Initialisation de l'ID et du nom si nécessaire
+    }
 
-        // Commande pour ajouter un fournisseur
-        public IRelayCommand AddSupplierCommand { get; }
+    // Ajouter un fournisseur
+    public void AddSupplier(int supplierId, string supplierName)
+    {
+        Suppliers.Add(new Supplier(supplierId, supplierName));
+    }
 
-        // Commande pour trier les fournisseurs par prix
-        public IRelayCommand SortByPriceCommand { get; }
-
-        // Commande pour trier les fournisseurs par délai de livraison
-        public IRelayCommand SortByDeliveryDaysCommand { get; }
-
-        public SecretaryViewModel()
+    // Ajouter un produit lié à un fournisseur
+    public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
+    {
+        var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
+        if (supplier != null)
         {
-            AddSupplierCommand = new RelayCommand(AddSupplier);
-            SortByPriceCommand = new RelayCommand(SortSuppliersByPrice);
-            SortByDeliveryDaysCommand = new RelayCommand(SortSuppliersByDeliveryDays);
+            var newProduct = new Product(productId, name, price, deliveryTime, supplier);
+            Products.Add(newProduct);
+            supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
+        }
+    }
+
+    // Trier les produits par prix
+    public void SortProductsByPrice()
+    {
+        Products = Products.OrderBy(p => p.Price).ToList();
+    }
+
+    // Trier les produits par délai de livraison
+    public void SortProductsByDeliveryTime()
+    {
+        Products = Products.OrderBy(p => p.DeliveryTime).ToList();
+    }
+}
+
+
+
+        // Propriétés pour lier à l'interface (liste des produits, fournisseurs, etc.)
+        [ObservableProperty]
+        public List<Supplier> suppliers = [];
+
+        [ObservableProperty]
+        public List<Product> products = [];
+
+        // Ajouter un fournisseur
+        public void AddSupplier(int supplierId, string supplierName)
+        {
+            _secretary.AddSupplier(supplierId, supplierName);
+            Suppliers = _secretary.Suppliers;
         }
 
-        private void AddSupplier()
+        // Ajouter un produit
+        public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
         {
-            var newSupplier = new Supplier
-            {
-                SupplierName = SupplierName,
-                Price = SupplierPrice,
-                DeliveryDays = SupplierDeliveryDays
-            };
-
-            Suppliers.Add(newSupplier); // Ajouter le fournisseur à la liste
+            _secretary.AddProduct(productId, name, price, deliveryTime, supplierId);
+            Products = _secretary.Products;
         }
 
-        private void SortSuppliersByPrice()
+        // Trier les produits par prix
+        public void SortProductsByPrice()
         {
-            Suppliers = Suppliers.OrderBy(s => s.Price).ToList(); // Trier par prix
+            _secretary.SortProductsByPrice();
+            Products = _secretary.Products;
         }
 
-        private void SortSuppliersByDeliveryDays()
+        // Trier les produits par délai de livraison
+        public void SortProductsByDeliveryTime()
         {
-            Suppliers = Suppliers.OrderBy(s => s.DeliveryDays).ToList(); // Trier par délai de livraison
+            _secretary.SortProductsByDeliveryTime();
+            Products = _secretary.Products;
         }
     }
 }

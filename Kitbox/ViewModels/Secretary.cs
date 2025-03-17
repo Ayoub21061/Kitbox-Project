@@ -33,9 +33,9 @@ namespace Kitbox.ViewModels
         {
             var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
             // Créer un nouveau produit et l'ajouter
-            var newProduct = new Product(productId, name, price, deliveryTime, supplier);
+            var newProduct = new Product(productId, name, price, deliveryTime, supplier!);
             Products.Add(newProduct);
-            supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
+            supplier!.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
                     
         }
 

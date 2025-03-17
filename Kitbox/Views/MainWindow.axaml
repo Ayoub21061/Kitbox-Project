@@ -11,7 +11,7 @@
     </Design.DataContext>
 
     <Grid>
-        <v:CustomerView DataContext="{Binding SecretaryViewModel}"/>
+        <v:SecretryView DataContext="{Binding SecretaryViewModel}"/>
     </Grid>
 
 </Window>
