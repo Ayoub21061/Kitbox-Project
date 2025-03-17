@@ -2,68 +2,27 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        // Instance de la classe Secretary pour accéder à la logique métier
-        private Secretary _secretary = new Secretary(1, "Secretary Name"); 
+        private Secretary _secretary;
 
-        public class Secretary
-{
-    // Liste des fournisseurs
-    public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
+        [ObservableProperty]
+        public List<Supplier> suppliers = new List<Supplier>();
 
-    // Liste des produits
-    public List<Product> Products { get; private set; } = new List<Product>();
+        [ObservableProperty]
+        public List<Product> products = new List<Product>();
 
-    // Constructeur avec ID et nom
-    public Secretary(int id, string name)
-    {
-        // Initialisation de l'ID et du nom si nécessaire
-    }
+        // Commande pour passer à la page suivante
+        public IRelayCommand SecondSecretaryPageCommand { get; }
 
-    // Ajouter un fournisseur
-    public void AddSupplier(int supplierId, string supplierName)
-    {
-        Suppliers.Add(new Supplier(supplierId, supplierName));
-    }
-
-    // Ajouter un produit lié à un fournisseur
-    public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
-    {
-        var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
-        if (supplier != null)
+        public SecretaryViewModel()
         {
-            var newProduct = new Product(productId, name, price, deliveryTime, supplier);
-            Products.Add(newProduct);
-            supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
+            _secretary = new Secretary();
+            SecondSecretaryPageCommand = new RelayCommand(SecondNextPage);
         }
-    }
-
-    // Trier les produits par prix
-    public void SortProductsByPrice()
-    {
-        Products = Products.OrderBy(p => p.Price).ToList();
-    }
-
-    // Trier les produits par délai de livraison
-    public void SortProductsByDeliveryTime()
-    {
-        Products = Products.OrderBy(p => p.DeliveryTime).ToList();
-    }
-}
-
-
-
-        // Propriétés pour lier à l'interface (liste des produits, fournisseurs, etc.)
-        [ObservableProperty]
-        public List<Supplier> suppliers = [];
-
-        [ObservableProperty]
-        public List<Product> products = [];
 
         // Ajouter un fournisseur
         public void AddSupplier(int supplierId, string supplierName)
@@ -92,6 +51,11 @@ namespace Kitbox.ViewModels
             _secretary.SortProductsByDeliveryTime();
             Products = _secretary.Products;
         }
+
+        private void SecondNextPage()
+        {
+            var SecondPage = new SecondSecretaryPageView();
+            SecondPage.Show();
+        }
     }
 }
-

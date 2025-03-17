@@ -1,64 +1,57 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Kitbox.ViewModels
-
 {
     [ObservableObject]
     public partial class Secretary : User
-
     {
-        [ObservableProperty]
-        private string? confirm;
-
         // Liste des fournisseurs
         public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
 
         // Liste des produits
         public List<Product> Products { get; private set; } = new List<Product>();
 
-        public Secretary()
-        {
+        public Secretary() { }
 
-        }
-
+        // Ajouter un fournisseur
         public void AddSupplier(int supplierId, string supplierName)
         {
             Suppliers.Add(new Supplier(supplierId, supplierName));
         }
 
+        // Ajouter un produit
         public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
         {
             var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
-            // Créer un nouveau produit et l'ajouter
-            var newProduct = new Product(productId, name, price, deliveryTime, supplier!);
-            Products.Add(newProduct);
-            supplier!.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
-                    
+            if (supplier != null)
+            {
+                var newProduct = new Product(productId, name, price, deliveryTime, supplier);
+                Products.Add(newProduct);
+                supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
+            }
         }
 
-        
-        // produits trier par prix (moins cher au plus cher)
+        // Trier les produits par prix
         public void SortProductsByPrice()
         {
             Products = Products.OrderBy(p => p.Price).ToList();
         }
 
-        // produit trier par délai de livraison (plus rapide au plus lent)
+        // Trier les produits par délai de livraison
         public void SortProductsByDeliveryTime()
         {
             Products = Products.OrderBy(p => p.DeliveryTime).ToList();
         }
     }
 
-
+    // Modèle Supplier
     public class Supplier
     {
-        public int SupplierId { get; private set; }
-        public string SupplierName { get; private set; }
-        public List<Product> Supplies { get; private set; } = new List<Product>();
+        public int SupplierId { get; }
+        public string SupplierName { get; }
+        public List<Product> Supplies { get; } = new List<Product>();
 
         public Supplier(int supplierId, string supplierName)
         {
@@ -67,6 +60,7 @@ namespace Kitbox.ViewModels
         }
     }
 
+    // Modèle Product
     public class Product
     {
         public int ProductId { get; set; }
