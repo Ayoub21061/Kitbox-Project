@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Kitbox.ViewModels"
+        xmlns:v="using:Kitbox.Views"
+        x:Class="Kitbox.Views.CustomerWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Kitbox">
+
+	<v:CustomerView />
+
+</Window>
