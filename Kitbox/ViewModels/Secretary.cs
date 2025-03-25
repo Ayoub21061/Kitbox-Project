@@ -1,81 +1,126 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Collections.ObjectModel;
+using System.IO;
+
 
 namespace Kitbox.ViewModels
 {
     [ObservableObject]
     public partial class Secretary : User
     {
-        // Liste des fournisseurs
-        public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
 
-        // Liste des produits
-        public List<Product> Products { get; private set; } = new List<Product>();
+        [ObservableProperty]
+        private string? supplierName;
 
-        public Secretary() { }
+        [ObservableProperty]
+        private int supplierId;
+
+        [ObservableProperty]
+        private string? articleName;
+
+        [ObservableProperty]
+        private string? dimensions;
+
+        [ObservableProperty]
+        private int productId;
+
+        [ObservableProperty]
+        private decimal sellingPrice;
+
+        [ObservableProperty]
+        private decimal supplierPrice;
+
+        [ObservableProperty]
+        private int stockQuantity;
+
+        [ObservableProperty]
+        private string? bestSupplierPrice;
+
+        [ObservableProperty]
+        private string? bestSupplierTime;
+
+        public ObservableCollection<dynamic> Suppliers { get; private set; } = new();
+        public ObservableCollection<dynamic> Products { get; private set; } = new();
+        public List<string> Status { get; } = new() { "In Stock", "To Order", "Ordered", "Out Of Stock" };
+
+        private readonly string filePath = "secretarydata.json";
+
+        public Secretary() 
+        { 
+            SupplierName = "";
+            SupplierId = 0;
+            ArticleName = "";
+            Dimensions = "";
+            ProductId = 0;
+            SellingPrice = 0;
+            SupplierPrice = 0;
+            StockQuantity = 0;
+            BestSupplierPrice = "";
+            BestSupplierTime = "";
+            LoadData(); // Charger les données existantes au démarrage
+        }
+
+        public Secretary(string supplierName, int supplierId, string articleName, string dimensions, int productId, decimal sellingPrice, decimal supplierPrice, int stockQuantity, string bestSupplierPrice, string bestSupplierTime)
+        {
+            SupplierName = supplierName;
+            SupplierId = supplierId;
+            ArticleName = articleName;
+            Dimensions = dimensions;
+            ProductId = productId;
+            SellingPrice = sellingPrice;
+            SupplierPrice = supplierPrice;
+            StockQuantity = stockQuantity;
+            BestSupplierPrice = bestSupplierPrice;
+            BestSupplierTime = bestSupplierTime;
+        }
 
         // Ajouter un fournisseur
-        public void AddSupplier(int supplierId, string supplierName)
+        public void AddSupplier(int id, string name)
         {
-            Suppliers.Add(new Supplier(supplierId, supplierName));
+            var supplier = new { SupplierId = id, SupplierName = name };
+            Suppliers.Add(supplier);
+            SaveData();
         }
 
         // Ajouter un produit
-        public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
+        public void AddProduct(int id, string name, decimal price, int deliveryTime, int supplierId)
         {
-            var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
-            if (supplier != null)
-            {
-                var newProduct = new Product(productId, name, price, deliveryTime, supplier);
-                Products.Add(newProduct);
-                supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
-            }
+            var product = new { ProductId = id, Name = name, Price = price, DeliveryTime = deliveryTime, SupplierId = supplierId };
+            Products.Add(product);
+            SaveData();
         }
 
         // Trier les produits par prix
-        public void SortProductsByPrice()
-        {
-            Products = Products.OrderBy(p => p.Price).ToList();
-        }
+        public void SortProductsByPrice() =>
+            Products = new ObservableCollection<dynamic>(Products.OrderBy(p => p.Price));
 
         // Trier les produits par délai de livraison
-        public void SortProductsByDeliveryTime()
+        public void SortProductsByDeliveryTime() =>
+            Products = new ObservableCollection<dynamic>(Products.OrderBy(p => p.DeliveryTime));
+
+         // Sauvegarde dans un fichier JSON
+        private void SaveData()
         {
-            Products = Products.OrderBy(p => p.DeliveryTime).ToList();
+            var data = new { Suppliers, Products };
+            File.WriteAllText(filePath, JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true }));
         }
-    }
 
-    // Modèle Supplier
-    public class Supplier
-    {
-        public int SupplierId { get; }
-        public string SupplierName { get; }
-        public List<Product> Supplies { get; } = new List<Product>();
-
-        public Supplier(int supplierId, string supplierName)
+        // Chargement des données depuis JSON
+        private void LoadData()
         {
-            SupplierId = supplierId;
-            SupplierName = supplierName;
-        }
-    }
-
-    // Modèle Product
-    public class Product
-    {
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; private set; }
-        public int DeliveryTime { get; private set; }
-        public Supplier Supplier { get; private set; }
-
-        public Product(int productId, string name, decimal price, int deliveryTime, Supplier supplier)
-        {
-            ProductId = productId;
-            Name = name;
-            Price = price;
-            DeliveryTime = deliveryTime;
-            Supplier = supplier;
+            if (File.Exists(filePath))
+            {
+                var json = File.ReadAllText(filePath);
+                var loadedData = JsonSerializer.Deserialize<dynamic>(json);
+                if (loadedData != null)
+                {
+                    Suppliers = new ObservableCollection<dynamic>(loadedData.Suppliers);
+                    Products = new ObservableCollection<dynamic>(loadedData.Products);
+                }
+            }
         }
     }
 }
