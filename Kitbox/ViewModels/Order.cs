@@ -17,27 +17,27 @@ namespace Kitbox.ViewModels
         public DateTime OrderDate {get; protected set;}= DateTime.Now;
 
 
-        public enum OrderStatusEnum { Awaiting_Stock, In_Progress, Saved, Ready_To_Go, Done}
-        public OrderStatusEnum OrderStatus { get; protected set; }
+         public enum OrderStatusEnum { Awaiting_Stock, In_Progress, Saved, Ready_To_Go, Done}
+         public OrderStatusEnum OrderStatus { get; protected set; }
 
 
-        public enum PaymentStatusEnum { Partially_Paid, Totally_Paid, Unpaid}
-        public PaymentStatusEnum PaymentStatus { get; protected set; }
-        public decimal TotalAmount { get; protected set; } 
+         public enum PaymentStatusEnum { Partially_Paid, Totally_Paid, Unpaid}
+         public PaymentStatusEnum PaymentStatus { get; protected set; }
+         public decimal TotalAmount { get; protected set; } 
 
-        public List<Product> Items { get; } = new List<Product>();
-        protected Order(int orderId, string customerMail, DateTime orderDate, decimal totalAmount)
-        {
-            OrderId = orderId;
-            CustomerMail = customerMail;
-            OrderDate = orderDate;
-            TotalAmount = totalAmount;
-            OrderStatus = OrderStatusEnum.Saved; // Par défaut
-            PaymentStatus = PaymentStatusEnum.Unpaid; // Par défaut
-        }
+         public List<Product> Items { get; } = new List<Product>();
+         protected Order(int orderId, string customerMail, DateTime orderDate, decimal totalAmount)
+         {
+             OrderId = orderId;
+             CustomerMail = customerMail;
+             OrderDate = orderDate;
+             TotalAmount = totalAmount;
+             OrderStatus = OrderStatusEnum.Saved; // Par défaut
+             PaymentStatus = PaymentStatusEnum.Unpaid; // Par défaut
+         }
 
 
 
-    }
+     }
 
 }

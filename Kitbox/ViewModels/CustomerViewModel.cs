@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Kitbox.ViewModels
 {
@@ -33,23 +34,35 @@ namespace Kitbox.ViewModels
         [ObservableProperty]
         private string? selectedIron;
 
+        [ObservableProperty]
+        private string email;
+
+        [ObservableProperty]
+        private ObservableCollection<string> apercuLockerImages = new ObservableCollection<string>();
+
+        public string ErrorMessage { get; set; } = "";
+
+
         public List<string> Iron { get; } = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
 
-        // Commande de sauvegarde
+        // Commandes
         public IRelayCommand SaveCommand { get; }
         public IRelayCommand SaveCommandWithLocker { get; }
-
         public IRelayCommand SaveCommandWithIron { get; }
-
-        // Ajout de commandes pour ouvrir les pages suivantes
         public IRelayCommand SecondPageCommand { get; }
-
         public IRelayCommand ThirdPageCommand { get; }
-
         public IRelayCommand FourthPageCommand { get; }
+        public IRelayCommand FifthPageCommand { get; }
+        public IRelayCommand SixthPageCommand { get; }
+        public IRelayCommand VoirApercuCommand { get; }
+        public IRelayCommand AppendCharacterCommand { get; }
+        public IRelayCommand DeleteCharacterCommand { get; }
+        public IRelayCommand SaveEmailCommand { get; }
 
+        // Collection pour les données des lockers
         public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
-
+        // Collection pour le tableau "Structure de l'armoire"
+        public ObservableCollection<ArmoryStructureRow> StructureArmory { get; } = new ObservableCollection<ArmoryStructureRow>();
 
         public CustomerViewModel()
         {
@@ -58,24 +71,153 @@ namespace Kitbox.ViewModels
             Width = 0;
             Depth = 0;
             Lockers = 0;
-            Iron = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
+            SelectedIron = "";
+            Email = "";
 
             LockersList = new ObservableCollection<LockerViewModel>();
-            LoadLockers();
+            StructureArmory = new ObservableCollection<ArmoryStructureRow>();
 
-            // Initialisation de la commande Save
+            // Chargement des données depuis le JSON (structure + lockers)
+            LoadCombinedData();
+
+            // Initialisation des commandes
             SaveCommand = new RelayCommand(SaveCustomerData);
-            // Commande avec les lockers
             SaveCommandWithLocker = new RelayCommand(SaveCustomerDataWithLocker);
-            // Sauvegarde des irons
             SaveCommandWithIron = new RelayCommand(SaveCustomerDataWithIron);
-            // Ajout de la commande pour ouvrir la page suivante
             SecondPageCommand = new RelayCommand(SecondNextPage);
             ThirdPageCommand = new RelayCommand(ThirdNextPage);
             FourthPageCommand = new RelayCommand(FourthNextPage);
+            FifthPageCommand = new RelayCommand(FifthNextPage);
+            SixthPageCommand = new RelayCommand(SixthNextPage);
+            VoirApercuCommand = new RelayCommand(ExecuteVoirApercu);
+            AppendCharacterCommand = new RelayCommand<string>(AppendCharacter);
+            DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
+            SaveEmailCommand = new RelayCommand(SaveEmail);
         }
 
-        // Méthode pour sauvegarder les données du client (Height, Width, Depth)
+        public bool IsEmailValid()
+        {
+            string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(Email, emailPattern);
+        }
+
+        public void ValidateEmail()
+        {
+            if (!IsEmailValid())
+            {
+                ErrorMessage = "Adresse mail invalide. Veuillez réessayer.";
+            }
+            else
+            {
+                ErrorMessage = string.Empty;
+            }
+        }
+        private void AppendCharacter(string? character)
+        {
+            Email += character;
+        }
+
+        private void DeleteCharacter()
+        {
+            if (!string.IsNullOrEmpty(Email))
+            {
+                Email = Email.Substring(0, Email.Length - 1);
+            }
+        }
+
+        public void SaveEmail()
+        {
+            // Valider l'email avant de le sauvegarder
+            ValidateEmail();
+
+            if (string.IsNullOrEmpty(ErrorMessage)) // Si pas d'erreur, on sauvegarde
+            {
+                string filepath = "customer_data.json";
+                Dictionary<string, object> existingData = new Dictionary<string, object>();
+
+                // Chargement des données existantes dans le fichier JSON
+                if (File.Exists(filepath))
+                {
+                    string jsonString = File.ReadAllText(filepath);
+                    existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString) ?? new Dictionary<string, object>();
+                }
+
+                // Ajout ou mise à jour de l'email dans le dictionnaire
+                existingData["Email"] = Email;
+
+                // Sérialisation et sauvegarde des données mises à jour dans le fichier JSON
+                string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filepath, updatedJsonString);
+
+                Confirm = "Email successfully saved!";
+            }
+            else
+            {
+                // Si l'email est invalide, on affiche le message d'erreur
+                Confirm = ErrorMessage;
+            }
+        }
+
+
+
+
+        // Méthode unique de chargement combiné
+        public void LoadCombinedData()
+        {
+            string filePath = "customer_data.json";
+            if (File.Exists(filePath))
+            {
+                string jsonContent = File.ReadAllText(filePath);
+                var data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+                if (data != null)
+                {
+                    // Chargement des données de base
+                    Height = data.ContainsKey("Height") ? data["Height"].GetInt32() : 0;
+                    Width = data.ContainsKey("Width") ? data["Width"].GetInt32() : 0;
+                    Depth = data.ContainsKey("Depth") ? data["Depth"].GetInt32() : 0;
+                    Lockers = data.ContainsKey("Lockers") ? data["Lockers"].GetInt32() : 0;
+                    SelectedIron = data.ContainsKey("Iron") ? data["Iron"].GetString() : "";
+
+                    // Mise à jour du tableau "Structure de l'armoire" avec la classe ArmoryStructureRow
+                    StructureArmory.Clear();
+                    StructureArmory.Add(new ArmoryStructureRow("Height", Height.ToString()));
+                    StructureArmory.Add(new ArmoryStructureRow("Width", Width.ToString()));
+                    StructureArmory.Add(new ArmoryStructureRow("Depth", Depth.ToString()));
+                    StructureArmory.Add(new ArmoryStructureRow("Lockers", Lockers.ToString()));
+                    StructureArmory.Add(new ArmoryStructureRow("Iron", SelectedIron ?? ""));
+
+                    // Chargement des lockers via LockersData
+                    LockersList.Clear();
+                    int index = 0;
+                    if (data.ContainsKey("LockersData") && data["LockersData"].ValueKind == JsonValueKind.Array)
+                    {
+                        var lockersData = data["LockersData"].EnumerateArray();
+                        foreach (var lockerData in lockersData)
+                        {
+                            var locker = new LockerViewModel(index, this)
+                            {
+                                SelectedCouleur = lockerData.TryGetProperty("Couleur", out var couleur) ? couleur.GetString() : "",
+                                Longueur = lockerData.TryGetProperty("Longueur", out var longueur) ? longueur.GetInt32() : 0,
+                                HasPorte = lockerData.TryGetProperty("HasPorte", out var hasPorte) ? hasPorte.GetBoolean() : false,
+                                CouleurPorteSelected = lockerData.TryGetProperty("CouleurPorte", out var couleurPorte) ? couleurPorte.GetString() : "",
+                                MatérielPorte = lockerData.TryGetProperty("MaterielPorte", out var materielPorte) ? materielPorte.GetString() : ""
+                            };
+                            LockersList.Add(locker);
+                            index++;
+                        }
+                    }
+                    // Compléter la liste si le nombre de lockers est inférieur à la valeur indiquée
+                    while (LockersList.Count < Lockers)
+                    {
+                        var locker = new LockerViewModel(index, this);
+                        LockersList.Add(locker);
+                        index++;
+                    }
+                }
+            }
+        }
+
+        // Méthode pour sauvegarder les dimensions uniquement
         private void SaveCustomerData()
         {
             var customerData = new
@@ -85,46 +227,34 @@ namespace Kitbox.ViewModels
                 Depth = this.Depth
             };
 
-            string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
-
+            string filePath = "customer_data.json";
             try
             {
-                // Sauvegarder les données dans un fichier JSON
                 string jsonString = JsonSerializer.Serialize(customerData, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(filePath, jsonString);
-
-                // Afficher un message de confirmation
                 Confirm = "Data successfully saved!";
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs lors de la sauvegarde
                 Console.WriteLine($"Erreur de sauvegarde : {ex.Message}");
             }
         }
 
-        // Méthode pour sauvegarder les données du client avec Lockers
+        // Méthode pour sauvegarder avec les lockers
         private void SaveCustomerDataWithLocker()
         {
-            string filePath = "customer_data.json"; // Le chemin du fichier de sauvegarde
+            string filePath = "customer_data.json";
             try
             {
-                // Lire les données précédemment sauvegardées pour Height, Width, Depth
                 if (File.Exists(filePath))
                 {
                     string jsonString = File.ReadAllText(filePath);
                     var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
-
-                    // Vérifiez si les données de dimensions existent
                     if (existingData != null && existingData.ContainsKey("Height") && existingData.ContainsKey("Width") && existingData.ContainsKey("Depth"))
                     {
-                        // Mettre à jour les données avec la valeur de Lockers
                         existingData["Lockers"] = this.Lockers;
-
-                        // Sauvegarder les données mises à jour
                         string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
                         File.WriteAllText(filePath, updatedJsonString);
-
                         Confirm = "Data with Lockers successfully saved!";
                     }
                     else
@@ -139,39 +269,29 @@ namespace Kitbox.ViewModels
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs lors de la sauvegarde
                 Console.WriteLine($"Erreur de sauvegarde : {ex.Message}");
             }
         }
 
+        // Méthode pour sauvegarder la couleur Iron
         private void SaveCustomerDataWithIron()
         {
-            string filePath = "customer_data.json"; // Chemin du fichier JSON
-
+            string filePath = "customer_data.json";
             try
             {
                 Dictionary<string, object> existingData = new Dictionary<string, object>();
-
-                // Vérifier si le fichier existe et récupérer les données existantes
                 if (File.Exists(filePath))
                 {
                     string jsonString = File.ReadAllText(filePath);
                     existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString) ?? new Dictionary<string, object>();
                 }
-
-                // Vérifier si les dimensions existent dans le fichier JSON
                 if (existingData.ContainsKey("Height") && existingData.ContainsKey("Width") && existingData.ContainsKey("Depth"))
                 {
-                    // Vérifier si une couleur a été sélectionnée
                     if (!string.IsNullOrEmpty(this.SelectedIron))
                     {
-                        // Mettre à jour ou ajouter la couleur sélectionnée
                         existingData["Iron"] = this.SelectedIron;
-
-                        // Sauvegarder les données mises à jour dans le fichier JSON
                         string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
                         File.WriteAllText(filePath, updatedJsonString);
-
                         Confirm = $"Iron color '{this.SelectedIron}' successfully saved!";
                     }
                     else
@@ -190,84 +310,26 @@ namespace Kitbox.ViewModels
             }
         }
 
-
-
-
-        private void LoadLockers()
-        {
-            string filePath = "customer_data.json";
-
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    // Désérialisation des données existantes
-                    var existingData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
-
-                    if (existingData != null)
-                    {
-                        // Vérifier si la clé "Lockers" existe et est un nombre
-                        if (existingData.ContainsKey("Lockers") && existingData["Lockers"].ValueKind == JsonValueKind.Number)
-                        {
-                            Lockers = existingData["Lockers"].GetInt32();  // Récupère la valeur de Lockers
-                            LockersList.Clear();  // Vide la liste des lockers avant d'ajouter les nouveaux
-
-                            for (int i = 0; i < Lockers; i++)
-                            {
-                                // Crée un nouvel objet LockerViewModel avec un index unique pour chaque locker
-                                var locker = new LockerViewModel(i, this);
-                                LockersList.Add(locker); // Ajoute à la liste
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("La valeur de Lockers n'est pas un nombre ou elle est manquante.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Les données existantes sont vides ou mal formatées.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erreur lors du chargement des lockers : {ex.Message}");
-            }
-        }
-
         public void DeleteLocker(int lockerIndex)
         {
             try
             {
                 string filePath = "customer_data.json";
                 if (!File.Exists(filePath)) return;
-
                 string existingJson = File.ReadAllText(filePath);
                 var existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? new Dictionary<string, object>();
 
                 if (existingData.ContainsKey("LockersData"))
                 {
                     var lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(JsonSerializer.Serialize(existingData["LockersData"])) ?? new List<Dictionary<string, object>>();
-
-                    // Supprimer le locker par index
                     if (lockerIndex >= 0 && lockerIndex < lockersList.Count)
                     {
                         lockersList.RemoveAt(lockerIndex);
-
-                        // Mettre à jour les données existantes avec les nouvelles informations
                         existingData["LockersData"] = lockersList;
                         existingData["Lockers"] = lockersList.Count;
-
-                        // Sauvegarder les données mises à jour
                         string newJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
                         File.WriteAllText(filePath, newJson);
-
-                        // Supprimer l'objet LockerViewModel correspondant
                         LockersList.RemoveAt(lockerIndex);
-
                         Console.WriteLine("Locker data successfully deleted!");
                     }
                     else
@@ -282,7 +344,19 @@ namespace Kitbox.ViewModels
             }
         }
 
+        private void ExecuteVoirApercu()
+        {
+            // Utilise directement la propriété Lockers du ViewModel
+            int lockersCount = this.Lockers;
 
+            // Réinitialiser la collection avant de l'alimenter
+            ApercuLockerImages.Clear();
+            for (int i = 0; i < lockersCount; i++)
+            {
+                // Ajoute le chemin de l'image pour chaque locker
+                ApercuLockerImages.Add("avares://Kitbox/Assets/Locker.png");
+            }
+        }
 
         private void SecondNextPage()
         {
@@ -300,6 +374,18 @@ namespace Kitbox.ViewModels
         {
             var FourthPage = new FourthPageView();
             FourthPage.Show();
+        }
+
+        private void FifthNextPage()
+        {
+            var FifthPage = new FifthPageView();
+            FifthPage.Show();
+        }
+
+        private void SixthNextPage()
+        {
+            var SixthPage = new SixthPageView();
+            SixthPage.Show();
         }
     }
 }
