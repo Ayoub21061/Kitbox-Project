@@ -11,5 +11,6 @@ namespace Kitbox.Views
             InitializeComponent();
             DataContext = new CustomerViewModel();
         }
+
     }
 }

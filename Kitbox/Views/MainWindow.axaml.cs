@@ -8,6 +8,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new CustomerViewModel();
+        DataContext = new SecretaryViewModel();
     }
 }

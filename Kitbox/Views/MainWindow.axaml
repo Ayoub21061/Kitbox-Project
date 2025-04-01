@@ -6,12 +6,10 @@
         x:DataType="vm:MainWindowViewModel"
         Title="Kitbox">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
-    <Grid>
-        <v:CustomerView DataContext="{Binding CustomerViewModel}"/>
-    </Grid>
+	<StackPanel>
+		<TextBox Text="{Binding InputNumber, Mode=TwoWay}" Width="200" Margin="10"/>
+		<Button Content="Switch Window" Command="{Binding ShowWindowCommand}" Width="200" Margin="10"/>
+		
+	</StackPanel>
 
 </Window>

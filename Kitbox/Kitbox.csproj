@@ -23,4 +23,16 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\SecretaryWindow.axaml.cs">
+      <DependentUpon>SecretaryWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CustomerWindow.axaml.cs">
+      <DependentUpon>CustomerWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\windowSK.axaml.cs">
+      <DependentUpon>windowSK.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
