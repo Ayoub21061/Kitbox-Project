@@ -105,7 +105,8 @@
                 </StackPanel>
             </StackPanel>
 
-            <!-- Espace libre sur la troisième colonne -->
+            <!-- Espace libre sur la troisième colonne  -->
+             <!-- ici -->
             <Border Grid.Column="2" Background="LightGray" Margin="5">
                 <TextBlock Text="Ici, tu peux ajouter autre chose" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
             </Border>
@@ -121,7 +122,7 @@
                     BorderThickness="3"
                     Background="Red"
                     Foreground="White"
-                    Command="{Binding FifthPageCommand}"/>
+                    Command="{Binding SixthPageCommand}"/>
         </Grid>
     </Grid>
 

@@ -1,12 +1,13 @@
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;       
+using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Kitbox.ViewModels
 {
@@ -33,6 +34,15 @@ namespace Kitbox.ViewModels
         [ObservableProperty]
         private string? selectedIron;
 
+        [ObservableProperty]
+        private string email;
+
+        [ObservableProperty]
+        private ObservableCollection<string> apercuLockerImages = new ObservableCollection<string>();
+
+        public string ErrorMessage { get; set; } = "";
+
+
         public List<string> Iron { get; } = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
 
         // Commandes
@@ -43,6 +53,11 @@ namespace Kitbox.ViewModels
         public IRelayCommand ThirdPageCommand { get; }
         public IRelayCommand FourthPageCommand { get; }
         public IRelayCommand FifthPageCommand { get; }
+        public IRelayCommand SixthPageCommand { get; }
+        public IRelayCommand VoirApercuCommand { get; }
+        public IRelayCommand AppendCharacterCommand { get; }
+        public IRelayCommand DeleteCharacterCommand { get; }
+        public IRelayCommand SaveEmailCommand { get; }
 
         // Collection pour les données des lockers
         public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
@@ -57,6 +72,7 @@ namespace Kitbox.ViewModels
             Depth = 0;
             Lockers = 0;
             SelectedIron = "";
+            Email = "";
 
             LockersList = new ObservableCollection<LockerViewModel>();
             StructureArmory = new ObservableCollection<ArmoryStructureRow>();
@@ -72,7 +88,78 @@ namespace Kitbox.ViewModels
             ThirdPageCommand = new RelayCommand(ThirdNextPage);
             FourthPageCommand = new RelayCommand(FourthNextPage);
             FifthPageCommand = new RelayCommand(FifthNextPage);
+            SixthPageCommand = new RelayCommand(SixthNextPage);
+            VoirApercuCommand = new RelayCommand(ExecuteVoirApercu);
+            AppendCharacterCommand = new RelayCommand<string>(AppendCharacter);
+            DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
+            SaveEmailCommand = new RelayCommand(SaveEmail);
         }
+
+        public bool IsEmailValid()
+        {
+            string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(Email, emailPattern);
+        }
+
+        public void ValidateEmail()
+        {
+            if (!IsEmailValid())
+            {
+                ErrorMessage = "Adresse mail invalide. Veuillez réessayer.";
+            }
+            else
+            {
+                ErrorMessage = string.Empty;
+            }
+        }
+        private void AppendCharacter(string? character)
+        {
+            Email += character;
+        }
+
+        private void DeleteCharacter()
+        {
+            if (!string.IsNullOrEmpty(Email))
+            {
+                Email = Email.Substring(0, Email.Length - 1);
+            }
+        }
+
+        public void SaveEmail()
+        {
+            // Valider l'email avant de le sauvegarder
+            ValidateEmail();
+
+            if (string.IsNullOrEmpty(ErrorMessage)) // Si pas d'erreur, on sauvegarde
+            {
+                string filepath = "customer_data.json";
+                Dictionary<string, object> existingData = new Dictionary<string, object>();
+
+                // Chargement des données existantes dans le fichier JSON
+                if (File.Exists(filepath))
+                {
+                    string jsonString = File.ReadAllText(filepath);
+                    existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString) ?? new Dictionary<string, object>();
+                }
+
+                // Ajout ou mise à jour de l'email dans le dictionnaire
+                existingData["Email"] = Email;
+
+                // Sérialisation et sauvegarde des données mises à jour dans le fichier JSON
+                string updatedJsonString = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filepath, updatedJsonString);
+
+                Confirm = "Email successfully saved!";
+            }
+            else
+            {
+                // Si l'email est invalide, on affiche le message d'erreur
+                Confirm = ErrorMessage;
+            }
+        }
+
+
+
 
         // Méthode unique de chargement combiné
         public void LoadCombinedData()
@@ -257,6 +344,20 @@ namespace Kitbox.ViewModels
             }
         }
 
+        private void ExecuteVoirApercu()
+        {
+            // Utilise directement la propriété Lockers du ViewModel
+            int lockersCount = this.Lockers;
+
+            // Réinitialiser la collection avant de l'alimenter
+            ApercuLockerImages.Clear();
+            for (int i = 0; i < lockersCount; i++)
+            {
+                // Ajoute le chemin de l'image pour chaque locker
+                ApercuLockerImages.Add("avares://Kitbox/Assets/Locker.png");
+            }
+        }
+
         private void SecondNextPage()
         {
             var SecondPage = new SecondPageView();
@@ -279,6 +380,12 @@ namespace Kitbox.ViewModels
         {
             var FifthPage = new FifthPageView();
             FifthPage.Show();
+        }
+
+        private void SixthNextPage()
+        {
+            var SixthPage = new SixthPageView();
+            SixthPage.Show();
         }
     }
 }
