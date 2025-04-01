@@ -1,15 +1,18 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Kitbox.ViewModels"
-        xmlns:v="using:Kitbox.Views"
-        x:Class="Kitbox.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+<Window xmlns="https://github.com/avaloniaui"  
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+        xmlns:vm="using:Kitbox.ViewModels"  
+        xmlns:v="using:Kitbox.Views"  
+        x:Class="Kitbox.Views.MainWindow"  
+        x:DataType="vm:MainWindowViewModel"  
         Title="Kitbox">
 
-	<StackPanel>
-		<TextBox Text="{Binding InputNumber, Mode=TwoWay}" Width="200" Margin="10"/>
-		<Button Content="Switch Window" Command="{Binding ShowWindowCommand}" Width="200" Margin="10"/>
-		
-	</StackPanel>
-
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">  
+            <Button Content="Customer" Command="{Binding ShowCustomerWindow}" CommandParameter="1" Background="Yellow" Width="100" Margin="5"/>  
+            <Button Content="StockKeeper" Command="{Binding ShowLoginWindow}" CommandParameter="2" Background="Yellow" Width="100" Margin="5"/>  
+            <Button Content="Secretary" Command="{Binding ShowLoginWindow}" CommandParameter="3" Background="Yellow" Width="100" Margin="5"/>  
+            <Button Content="Seller" Command="{Binding ShowSellerWindow}" CommandParameter="4" Background="Yellow" Width="100" Margin="5"/>  
+        </StackPanel>
+    </StackPanel>
+  
 </Window>
