@@ -20,7 +20,7 @@ namespace Kitbox.ViewModels
 
         private readonly Dictionary<string, string> _secretaryCredentials = new Dictionary<string, string>
             {
-                { "secretary1@example.com", "secretary123" },
+                { "1", "2" },
                 { "secretary2@example.com", "secretary456" }
             };
 
