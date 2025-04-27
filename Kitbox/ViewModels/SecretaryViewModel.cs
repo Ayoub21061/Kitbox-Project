@@ -1,3 +1,4 @@
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
@@ -7,8 +8,9 @@ namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        private Secretary _secretary;
+        // private Secretary _secretary;
 
+        /*
         [ObservableProperty]
         public List<Supplier> suppliers = new List<Supplier>();
 
@@ -51,11 +53,12 @@ namespace Kitbox.ViewModels
             _secretary.SortProductsByDeliveryTime();
             Products = _secretary.Products;
         }
+        */
 
-        private void SecondNextPage()
-        {
-            var SecondPage = new SecondSecretaryPageView();
-            SecondPage.Show();
-        }
+        // private void SecondNextPage()
+        // {
+        //     var SecondPage = new SecondSecretaryPageView();
+        //     SecondPage.Show();
+        // }
     }
 }
