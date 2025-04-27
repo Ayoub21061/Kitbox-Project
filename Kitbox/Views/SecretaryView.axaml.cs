@@ -7,11 +7,11 @@ using Kitbox.ViewModels;
 namespace Kitbox.Views
 {
     public partial class SecretaryView : UserControl
+{
+    public SecretaryView()
     {
-        public SecretaryView()
-        {
-            InitializeComponent();
-            DataContext = new SecretaryViewModel();
-        }
+        InitializeComponent();
+        DataContext = new SecretaryViewModel(); 
     }
+}
 }

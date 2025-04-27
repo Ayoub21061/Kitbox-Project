@@ -5,6 +5,9 @@ using Kitbox.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
+using System.IO;
+using System;
 
 namespace Kitbox.ViewModels
 {
@@ -21,6 +24,7 @@ namespace Kitbox.ViewModels
         public IRelayCommand SecondSecretaryPageCommand { get; }
         public IRelayCommand AddSupplierCommand { get; }
         public IRelayCommand AddProductCommand { get; }
+        public IRelayCommand SaveSecretaryCommand { get; } // Ajout de la commande
 
         public SecretaryViewModel()
         {
@@ -31,14 +35,10 @@ namespace Kitbox.ViewModels
             Products = new ObservableCollection<Product>(_secretary.Products);
 
             // Commandes
-            SecondSecretaryPageCommand = new RelayCommand(SecondNextPage, CanExecuteNextPage);
-            AddSupplierCommand = new RelayCommand(() => AddSupplier(1, "Default Supplier")); 
+            SecondSecretaryPageCommand = new RelayCommand(SecondNextPageSec);
+            AddSupplierCommand = new RelayCommand(() => AddSupplier(1, "Default Supplier"));
             AddProductCommand = new RelayCommand(() => AddProduct(1, "Default Product", 100m, 5, 1));
-        }
-
-        private bool CanExecuteNextPage()
-        {
-            return true; // Si tu veux que la commande soit toujours activée
+            SaveSecretaryCommand = new RelayCommand(SaveSecretaryDataToJson); // Initialisation
         }
 
         // Ajouter un fournisseur
@@ -75,10 +75,39 @@ namespace Kitbox.ViewModels
                 Products.Add(product);
         }
 
-        private void SecondNextPage()
+        // Naviguer vers la deuxième page
+        private void SecondNextPageSec()
         {
             var secondPage = new SecondSecretaryPageView();
             secondPage.Show();
+        }
+
+        // Sauvegarde en JSON
+        private void SaveSecretaryDataToJson()
+        {
+            try
+            {
+                var secretaryData = new
+                {
+                    Suppliers = Suppliers,
+                    Products = Products
+                };
+
+                string json = JsonSerializer.Serialize(secretaryData, new JsonSerializerOptions { WriteIndented = true });
+
+                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "KitboxData");
+                Directory.CreateDirectory(directoryPath); // Créé le dossier si pas encore existant
+                string filePath = Path.Combine(directoryPath, "SecretaryData.json");
+
+                File.WriteAllText(filePath, json);
+
+                // Optionnel : Message de succès
+                Console.WriteLine($"Data saved successfully to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving data: {ex.Message}");
+            }
         }
     }
 }
