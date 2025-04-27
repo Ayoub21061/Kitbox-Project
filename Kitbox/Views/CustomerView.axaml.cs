@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using Avalonia.Input;  // Assure-toi d'ajouter cette ligne
+using Avalonia.Input; 
 using Kitbox.ViewModels;
 
 namespace Kitbox.Views
