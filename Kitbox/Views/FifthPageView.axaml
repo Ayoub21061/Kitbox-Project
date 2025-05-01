@@ -1,0 +1,129 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Kitbox.ViewModels;assembly=Kitbox"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+        x:Class="Kitbox.Views.FifthPageView"
+        x:DataType="vm:CustomerViewModel"
+        Title="Kitbox's App">
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Entête -->
+            <RowDefinition Height="*"/>  <!-- Contenu principal -->
+            <RowDefinition Height="Auto"/>  <!-- Bouton -->
+        </Grid.RowDefinitions>
+
+        <!-- Entête -->
+        <Border Background="Red" Height="30" HorizontalAlignment="Stretch" Grid.Row="0">
+            <TextBlock Text="Summary" Foreground="White"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontSize="18" FontWeight="Bold"/>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />  <!-- Première colonne -->
+                <ColumnDefinition Width="1*" />  <!-- Deuxième colonne -->
+                <ColumnDefinition Width="Auto" /> <!-- Troisième colonne (libre pour autre chose) -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Première colonne : Structure de l'armoire -->
+            <StackPanel Grid.Column="0" Margin="10">
+                <TextBlock Text="Structure de l'armoire:" FontWeight="Bold" FontSize="16" Foreground="Black"/>
+
+                <!-- Manuelle table des données de StructureArmory -->
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal">
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                            <TextBlock Text="Key" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="200">
+                            <TextBlock Text="Value" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Itérer sur StructureArmory -->
+                    <ItemsControl ItemsSource="{Binding StructureArmory}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                                        <TextBlock Text="{Binding Key}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="200">
+                                        <TextBlock Text="{Binding Value}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Deuxième colonne : Liste des lockers -->
+            <StackPanel Grid.Column="1" Margin="10,10,0,10" HorizontalAlignment="Left">
+                <TextBlock Text="Lockers Details:" FontWeight="Bold" FontSize="16" Foreground="Black"/>
+
+                <!-- Manuelle table des lockers -->
+                <StackPanel Margin="10" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                            <TextBlock Text="Couleur" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                            <TextBlock Text="Longueur" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                            <TextBlock Text="Porte" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                            <TextBlock Text="CouleurPorte" Foreground="Black" HorizontalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Liste des lockers -->
+                    <ItemsControl ItemsSource="{Binding LockersList}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                                        <TextBlock Text="{Binding SelectedCouleur}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                                        <TextBlock Text="{Binding Longueur}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                                        <TextBlock Text="{Binding HasPorte}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
+                                        <TextBlock Text="{Binding CouleurPorteSelected}" Foreground="Black" HorizontalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Espace libre sur la troisième colonne  -->
+             <!-- ici -->
+            <Border Grid.Column="2" Background="LightGray" Margin="5">
+                <TextBlock Text="Ici, tu peux ajouter autre chose" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+            </Border>
+        </Grid>
+
+        <!-- Grid contenant le bouton -->
+        <Grid Grid.Row="2">
+            <Button Content="Next Page"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,10,10,10"
+                    BorderBrush="Black"
+                    BorderThickness="3"
+                    Background="Red"
+                    Foreground="White"
+                    Command="{Binding SixthPageCommand}"/>
+        </Grid>
+    </Grid>
+
+</Window>

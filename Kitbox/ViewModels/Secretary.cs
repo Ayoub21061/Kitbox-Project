@@ -1,87 +1,93 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Kitbox.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Text.Json;
+using System.Collections.ObjectModel;
+using System.IO;
 
 namespace Kitbox.ViewModels
-
 {
     [ObservableObject]
     public partial class Secretary : User
-
     {
-        [ObservableProperty]
-        private string? confirm;
+        public ObservableCollection<Supplier> Suppliers { get; private set; } = new();
+        public ObservableCollection<Product> Products { get; private set; } = new();
+        public List<string> Status { get; } = new() { "In Stock", "To Order", "Ordered", "Out Of Stock" };
 
-        // Liste des fournisseurs
-        public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
-
-        // Liste des produits
-        public List<Product> Products { get; private set; } = new List<Product>();
+        private readonly string filePath = "secretarydata.json";
 
         public Secretary()
         {
-
+            LoadData(); // Charger les données existantes au démarrage
         }
 
-        public void AddSupplier(int supplierId, string supplierName)
+        // Ajouter un fournisseur
+        public void AddSupplier(int id, string name)
         {
-            Suppliers.Add(new Supplier(supplierId, supplierName));
+            var supplier = new Supplier(id, name);
+            Suppliers.Add(supplier);
+            SaveData();
         }
 
-        public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
+        // Ajouter un produit
+        public void AddProduct(int id, string name, decimal price, int deliveryTime, int supplierId)
         {
-            var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
-            // Créer un nouveau produit et l'ajouter
-            var newProduct = new Product(productId, name, price, deliveryTime, supplier!);
-            Products.Add(newProduct);
-            supplier!.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
-                    
+            var product = new Product(id, name, price, deliveryTime, supplierId);
+            Products.Add(product);
+            SaveData();
         }
 
-        
-        // produits trier par prix (moins cher au plus cher)
+        // Trier les produits par prix
         public void SortProductsByPrice()
         {
-            Products = Products.OrderBy(p => p.Price).ToList();
+            var sortedProducts = Products.OrderBy(p => p.Price).ToList();
+            Products.Clear();
+            foreach (var product in sortedProducts)
+                Products.Add(product);
         }
 
-        // produit trier par délai de livraison (plus rapide au plus lent)
+        // Trier les produits par délai de livraison
         public void SortProductsByDeliveryTime()
         {
-            Products = Products.OrderBy(p => p.DeliveryTime).ToList();
+            var sortedProducts = Products.OrderBy(p => p.DeliveryTime).ToList();
+            Products.Clear();
+            foreach (var product in sortedProducts)
+                Products.Add(product);
+        }
+
+        // Sauvegarde dans un fichier JSON
+        private void SaveData()
+        {
+            var data = new
+            {
+                Suppliers = Suppliers.ToList(),
+                Products = Products.ToList()
+            };
+            File.WriteAllText(filePath, JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        // Chargement des données depuis JSON
+        private void LoadData()
+        {
+            if (File.Exists(filePath))
+            {
+                var json = File.ReadAllText(filePath);
+                var loadedData = JsonSerializer.Deserialize<SecretaryData>(json);
+
+                if (loadedData != null)
+                {
+                    Suppliers = new ObservableCollection<Supplier>(loadedData.Suppliers);
+                    Products = new ObservableCollection<Product>(loadedData.Products);
+                }
+            }
         }
     }
 
-
-    public class Supplier
+    // Classe pour la désérialisation des données
+    public class SecretaryData
     {
-        public int SupplierId { get; private set; }
-        public string SupplierName { get; private set; }
-        public List<Product> Supplies { get; private set; } = new List<Product>();
-
-        public Supplier(int supplierId, string supplierName)
-        {
-            SupplierId = supplierId;
-            SupplierName = supplierName;
-        }
-    }
-
-    public class Product
-    {
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; private set; }
-        public int DeliveryTime { get; private set; }
-        public Supplier Supplier { get; private set; }
-
-        public Product(int productId, string name, decimal price, int deliveryTime, Supplier supplier)
-        {
-            ProductId = productId;
-            Name = name;
-            Price = price;
-            DeliveryTime = deliveryTime;
-            Supplier = supplier;
-        }
+        public List<Supplier> Suppliers { get; set; } = new();
+        public List<Product> Products { get; set; } = new();
     }
 }

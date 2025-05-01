@@ -1,97 +1,84 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
+using Kitbox.Models;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        // Instance de la classe Secretary pour accéder à la logique métier
-        private Secretary _secretary = new Secretary(1, "Secretary Name"); 
+        private readonly Secretary _secretary;
 
-        public class Secretary
-{
-    // Liste des fournisseurs
-    public List<Supplier> Suppliers { get; private set; } = new List<Supplier>();
+        [ObservableProperty]
+        private ObservableCollection<Supplier> suppliers;
 
-    // Liste des produits
-    public List<Product> Products { get; private set; } = new List<Product>();
+        [ObservableProperty]
+        private ObservableCollection<Product> products;
 
-    // Constructeur avec ID et nom
-    public Secretary(int id, string name)
-    {
-        // Initialisation de l'ID et du nom si nécessaire
-    }
+        public IRelayCommand SecondSecretaryPageCommand { get; }
+        public IRelayCommand AddSupplierCommand { get; }
+        public IRelayCommand AddProductCommand { get; }
 
-    // Ajouter un fournisseur
-    public void AddSupplier(int supplierId, string supplierName)
-    {
-        Suppliers.Add(new Supplier(supplierId, supplierName));
-    }
-
-    // Ajouter un produit lié à un fournisseur
-    public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
-    {
-        var supplier = Suppliers.FirstOrDefault(s => s.SupplierId == supplierId);
-        if (supplier != null)
+        public SecretaryViewModel()
         {
-            var newProduct = new Product(productId, name, price, deliveryTime, supplier);
-            Products.Add(newProduct);
-            supplier.Supplies.Add(newProduct); // Ajouter le produit à la liste du fournisseur
+            _secretary = new Secretary();
+
+            // Initialisation des collections
+            Suppliers = new ObservableCollection<Supplier>(_secretary.Suppliers);
+            Products = new ObservableCollection<Product>(_secretary.Products);
+
+            // Commandes
+            SecondSecretaryPageCommand = new RelayCommand(SecondNextPage, CanExecuteNextPage);
+            AddSupplierCommand = new RelayCommand(() => AddSupplier(1, "Default Supplier")); 
+            AddProductCommand = new RelayCommand(() => AddProduct(1, "Default Product", 100m, 5, 1));
         }
-    }
 
-    // Trier les produits par prix
-    public void SortProductsByPrice()
-    {
-        Products = Products.OrderBy(p => p.Price).ToList();
-    }
-
-    // Trier les produits par délai de livraison
-    public void SortProductsByDeliveryTime()
-    {
-        Products = Products.OrderBy(p => p.DeliveryTime).ToList();
-    }
-}
-
-
-
-        // Propriétés pour lier à l'interface (liste des produits, fournisseurs, etc.)
-        [ObservableProperty]
-        public List<Supplier> suppliers = [];
-
-        [ObservableProperty]
-        public List<Product> products = [];
+        private bool CanExecuteNextPage()
+        {
+            return true; // Si tu veux que la commande soit toujours activée
+        }
 
         // Ajouter un fournisseur
         public void AddSupplier(int supplierId, string supplierName)
         {
+            var newSupplier = new Supplier(supplierId, supplierName);
             _secretary.AddSupplier(supplierId, supplierName);
-            Suppliers = _secretary.Suppliers;
+            Suppliers.Add(newSupplier);
         }
 
         // Ajouter un produit
         public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
         {
+            var newProduct = new Product(productId, name, price, deliveryTime, supplierId);
             _secretary.AddProduct(productId, name, price, deliveryTime, supplierId);
-            Products = _secretary.Products;
+            Products.Add(newProduct);
         }
 
         // Trier les produits par prix
         public void SortProductsByPrice()
         {
-            _secretary.SortProductsByPrice();
-            Products = _secretary.Products;
+            var sortedProducts = _secretary.Products.OrderBy(p => p.Price).ToList();
+            Products.Clear();
+            foreach (var product in sortedProducts)
+                Products.Add(product);
         }
 
         // Trier les produits par délai de livraison
         public void SortProductsByDeliveryTime()
         {
-            _secretary.SortProductsByDeliveryTime();
-            Products = _secretary.Products;
+            var sortedProducts = _secretary.Products.OrderBy(p => p.DeliveryTime).ToList();
+            Products.Clear();
+            foreach (var product in sortedProducts)
+                Products.Add(product);
+        }
+
+        private void SecondNextPage()
+        {
+            var secondPage = new SecondSecretaryPageView();
+            secondPage.Show();
         }
     }
 }
-
