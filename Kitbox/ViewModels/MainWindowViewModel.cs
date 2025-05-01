@@ -66,12 +66,27 @@ namespace Kitbox.ViewModels
             }
         }
 
-        private void ExecuteShowWindowCommand()
+        private void Login()
         {
-            ShowViewModel(InputNumber);
+            if (VerifyCredentials(Email, Password, _stockkeeperCredentials))
+            {
+                // Handle successful login for Stockkeeper
+                ShowStockkeeperWindow();
+            }
+            else if (VerifyCredentials(Email, Password, _secretaryCredentials))
+            {
+                // Handle successful login for Secretary
+                ShowSecretaryWindow();
+            }
+            else
+            {
+
+                ShowStockkeeperWindow();
+                // Handle failed login
+                // For example, show an error message
+            }
         }
 
-     
         public SecretaryViewModel SecretaryViewModel { get; } = new SecretaryViewModel();
 
     }
