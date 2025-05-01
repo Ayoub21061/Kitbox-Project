@@ -2,15 +2,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Kitbox.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Kitbox.Views.WindowSK"
+        x:DataType="vm:SkViewModel"
         Title="WindowSK">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Name="SearchBar" Width="300" Margin="10"/>
-        <ListBox Grid.Row="1" Name="OrdersBoard" Margin="10"/>
-    </Grid>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Search Bar -->
+		<TextBox Grid.Row="0" Grid.ColumnSpan="2" Name="SearchBar" Width="300" Margin="10"/>
+
+		<!-- Navigator -->
+		<StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
+			<Button Content="Home" Margin="5"/>
+			<Button Content="Orders" Margin="5"/>
+			<Button Content="Settings" Margin="5"/>
+		</StackPanel>
+
+		<!-- Order Tables -->
+		<DataGrid Margin="20" ItemsSource=""
+          GridLinesVisibility="All"
+          BorderThickness="1" BorderBrush="Gray">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="First Name"  Binding=""/>
+				<DataGridTextColumn Header="Last Name" Binding="" />
+				<DataGridCheckBoxColumn Header="Fictitious?" Binding="" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </Window>

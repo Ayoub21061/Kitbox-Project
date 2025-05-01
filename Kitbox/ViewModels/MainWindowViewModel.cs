@@ -112,7 +112,7 @@ namespace Kitbox.ViewModels
             else
             {
 
-               
+                ShowStockkeeperWindow();
                 // Handle failed login
                 // For example, show an error message
             }
