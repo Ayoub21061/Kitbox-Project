@@ -13,7 +13,7 @@ namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        public  Secretary _secretary;
+        public Secretary _secretary;
 
         public IRelayCommand SecondSecretaryPageCommand { get; }
         public IRelayCommand SaveSecretaryCommand { get; }
@@ -24,6 +24,10 @@ namespace Kitbox.ViewModels
 
             SecondSecretaryPageCommand = new RelayCommand(SecondNextPageSec);
             //SaveSecretaryCommand = new RelayCommand(SaveSecretaryDataToJson); // Initialisation
+            var db = new TonProjet.Services.DatabaseService();
+            Message = db.TesterConnexion()
+                ? "✅ Connexion à la base réussie"
+                : "❌ Connexion échouée";
         }
 
         // Naviguer vers la deuxième page
@@ -32,6 +36,9 @@ namespace Kitbox.ViewModels
             var secondPage = new SecondSecretaryPageView();
             secondPage.Show();
         }
+        public string Message { get; set; }
+        
+
     
     }
 }
