@@ -78,18 +78,10 @@ namespace Kitbox.ViewModels
         }
         */
 
-<<<<<<< HEAD
         // private void SecondNextPage()
         // {
         //     var SecondPage = new SecondSecretaryPageView();
         //     SecondPage.Show();
         // }
-=======
-        private void SecondNextPage()
-        {
-            var secondPage = new SecondSecretaryPageView();
-            secondPage.Show();
-        }
->>>>>>> main
     }
 }
