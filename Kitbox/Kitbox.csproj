@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.1.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.0" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.0" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.0" />
@@ -30,6 +31,9 @@
     </Compile>
     <Compile Update="Views\CustomerWindow.axaml.cs">
       <DependentUpon>CustomerWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LoginWindow.axaml.cs">
+      <DependentUpon>LoginWindow.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\windowSK.axaml.cs">
       <DependentUpon>windowSK.axaml</DependentUpon>
