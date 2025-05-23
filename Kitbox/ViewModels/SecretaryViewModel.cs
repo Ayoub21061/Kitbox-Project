@@ -14,7 +14,8 @@ namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        public  Secretary _secretary;
+        public string Message { get; set; }
+        public Secretary _secretary;
 
         public IRelayCommand SecondSecretaryPageCommand { get; }
         public IRelayCommand ?SaveSecretaryCommand { get; }
