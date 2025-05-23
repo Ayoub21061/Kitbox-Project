@@ -54,6 +54,7 @@ namespace Kitbox.ViewModels
         public IRelayCommand FourthPageCommand { get; }
         public IRelayCommand FifthPageCommand { get; }
         public IRelayCommand SixthPageCommand { get; }
+        public IRelayCommand FinalPageCommand { get; }
         public IRelayCommand VoirApercuCommand { get; }
         public IRelayCommand AppendCharacterCommand { get; }
         public IRelayCommand DeleteCharacterCommand { get; }
@@ -89,6 +90,7 @@ namespace Kitbox.ViewModels
             FourthPageCommand = new RelayCommand(FourthNextPage);
             FifthPageCommand = new RelayCommand(FifthNextPage);
             SixthPageCommand = new RelayCommand(SixthNextPage);
+            FinalPageCommand = new RelayCommand(FinalPage);
             VoirApercuCommand = new RelayCommand(ExecuteVoirApercu);
             AppendCharacterCommand = new RelayCommand<string>(AppendCharacter);
             DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
@@ -386,6 +388,11 @@ namespace Kitbox.ViewModels
         {
             var SixthPage = new SixthPageView();
             SixthPage.Show();
+        }
+        private void FinalPage()
+        {
+            var FinalPage = new FinalPageView();
+            FinalPage.Show();
         }
     }
 }
