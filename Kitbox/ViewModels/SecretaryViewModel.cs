@@ -25,6 +25,10 @@ namespace Kitbox.ViewModels
 
             SecondSecretaryPageCommand = new RelayCommand(SecondNextPageSec);
             //SaveSecretaryCommand = new RelayCommand(SaveSecretaryDataToJson); // Initialisation
+            var db = new TonProjet.Services.DatabaseService();
+            Message = db.TesterConnexion()
+                ? "✅ Connexion à la base réussie"
+                : "❌ Connexion échouée";
         }
 
         // Naviguer vers la deuxième page
