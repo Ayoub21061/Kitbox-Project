@@ -6,82 +6,38 @@ using Kitbox.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
+using System.IO;
+using System;
 
 namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        // private Secretary _secretary;
-
-        /*
-        [ObservableProperty]
-        private ObservableCollection<Supplier> suppliers;
-
-        [ObservableProperty]
-        private ObservableCollection<Product> products;
+        public string Message { get; set; }
+        public Secretary _secretary;
 
         public IRelayCommand SecondSecretaryPageCommand { get; }
-        public IRelayCommand AddSupplierCommand { get; }
-        public IRelayCommand AddProductCommand { get; }
+        public IRelayCommand ?SaveSecretaryCommand { get; }
 
         public SecretaryViewModel()
         {
             _secretary = new Secretary();
 
-            // Initialisation des collections
-            Suppliers = new ObservableCollection<Supplier>(_secretary.Suppliers);
-            Products = new ObservableCollection<Product>(_secretary.Products);
-
-            // Commandes
-            SecondSecretaryPageCommand = new RelayCommand(SecondNextPage, CanExecuteNextPage);
-            AddSupplierCommand = new RelayCommand(() => AddSupplier(1, "Default Supplier")); 
-            AddProductCommand = new RelayCommand(() => AddProduct(1, "Default Product", 100m, 5, 1));
+            SecondSecretaryPageCommand = new RelayCommand(SecondNextPageSec);
+            //SaveSecretaryCommand = new RelayCommand(SaveSecretaryDataToJson); // Initialisation
+            var db = new TonProjet.Services.DatabaseService();
+            Message = db.TesterConnexion()
+                ? "✅ Connexion à la base réussie"
+                : "❌ Connexion échouée";
         }
 
-        private bool CanExecuteNextPage()
+        // Naviguer vers la deuxième page
+        private void SecondNextPageSec()
         {
-            return true; // Si tu veux que la commande soit toujours activée
+            var secondPage = new SecondSecretaryPageView();
+            secondPage.Show();
         }
-
-        // Ajouter un fournisseur
-        public void AddSupplier(int supplierId, string supplierName)
-        {
-            var newSupplier = new Supplier(supplierId, supplierName);
-            _secretary.AddSupplier(supplierId, supplierName);
-            Suppliers.Add(newSupplier);
-        }
-
-        // Ajouter un produit
-        public void AddProduct(int productId, string name, decimal price, int deliveryTime, int supplierId)
-        {
-            var newProduct = new Product(productId, name, price, deliveryTime, supplierId);
-            _secretary.AddProduct(productId, name, price, deliveryTime, supplierId);
-            Products.Add(newProduct);
-        }
-
-        // Trier les produits par prix
-        public void SortProductsByPrice()
-        {
-            var sortedProducts = _secretary.Products.OrderBy(p => p.Price).ToList();
-            Products.Clear();
-            foreach (var product in sortedProducts)
-                Products.Add(product);
-        }
-
-        // Trier les produits par délai de livraison
-        public void SortProductsByDeliveryTime()
-        {
-            var sortedProducts = _secretary.Products.OrderBy(p => p.DeliveryTime).ToList();
-            Products.Clear();
-            foreach (var product in sortedProducts)
-                Products.Add(product);
-        }
-        */
-
-        // private void SecondNextPage()
-        // {
-        //     var SecondPage = new SecondSecretaryPageView();
-        //     SecondPage.Show();
-        // }
+         
     }
 }
