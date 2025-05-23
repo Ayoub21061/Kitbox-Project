@@ -14,10 +14,11 @@ namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        public  Secretary _secretary;
+        public string Message { get; set; }
+        public Secretary _secretary;
 
         public IRelayCommand SecondSecretaryPageCommand { get; }
-        public IRelayCommand SaveSecretaryCommand { get; }
+        public IRelayCommand ?SaveSecretaryCommand { get; }
 
         public SecretaryViewModel()
         {
@@ -37,6 +38,6 @@ namespace Kitbox.ViewModels
             var secondPage = new SecondSecretaryPageView();
             secondPage.Show();
         }
-    
+         
     }
 }
