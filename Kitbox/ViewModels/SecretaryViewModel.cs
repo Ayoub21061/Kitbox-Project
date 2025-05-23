@@ -1,3 +1,4 @@
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
@@ -13,7 +14,7 @@ namespace Kitbox.ViewModels
 {
     public partial class SecretaryViewModel : ObservableObject
     {
-        public Secretary _secretary;
+        public  Secretary _secretary;
 
         public IRelayCommand SecondSecretaryPageCommand { get; }
         public IRelayCommand SaveSecretaryCommand { get; }
@@ -36,9 +37,6 @@ namespace Kitbox.ViewModels
             var secondPage = new SecondSecretaryPageView();
             secondPage.Show();
         }
-        public string Message { get; set; }
-        
-
     
     }
 }

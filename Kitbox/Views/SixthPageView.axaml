@@ -99,6 +99,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
                 <Button Content="Save Email" Foreground="Black" Background="Green" BorderBrush="Black" BorderThickness="1" Command="{Binding SaveEmailCommand}" Width="120" HorizontalAlignment="Left" Margin="5"/>
                 <Button Content="Delete" Foreground="Black" Background="Red" BorderBrush="Black" BorderThickness="1" Command="{Binding DeleteCharacterCommand}" Width="120" HorizontalAlignment="Right" Margin="5"/>
+                <Button Content="Next Page" Foreground="Black" Background="Red" BorderBrush="Black" BorderThickness="1" Command="{Binding FinalPageCommand}"  Width="120" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"/>
             </StackPanel>
         </StackPanel>
     </Grid>
