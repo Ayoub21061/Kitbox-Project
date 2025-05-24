@@ -11,7 +11,8 @@ public partial class WindowSK : Window
     {
         InitializeComponent();
         DataContext = new SkViewModel();
-    }
+            System.Diagnostics.Debug.WriteLine("DataContext set in WindowSK");
+        }
     
 }
 }

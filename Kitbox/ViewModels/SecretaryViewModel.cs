@@ -26,7 +26,7 @@ namespace Kitbox.ViewModels
 
             SecondSecretaryPageCommand = new RelayCommand(SecondNextPageSec);
             //SaveSecretaryCommand = new RelayCommand(SaveSecretaryDataToJson); // Initialisation
-            var db = new TonProjet.Services.DatabaseService();
+            var db = new Kitbox.Services.DatabaseService();
             Message = db.TesterConnexion()
                 ? "✅ Connexion à la base réussie"
                 : "❌ Connexion échouée";
