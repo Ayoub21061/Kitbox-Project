@@ -11,7 +11,6 @@
 	<StyleInclude Source="avares://Kitbox/Views/Styles.axaml"/>
 </Window.Styles>
 
-<<<<<<< HEAD
     <DockPanel>
         <!-- Navigation bar -->
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="Gray" Margin="10">
@@ -31,14 +30,12 @@
             </ContentControl.DataTemplates>
         </ContentControl>
     </DockPanel>
-=======
 <Grid>
 	<!-- Full window background image -->
 	<Grid.Background>
 		<ImageBrush Source="avares://Kitbox/Assets/background_Kitbox.png"
 					Stretch="UniformToFill"/>
 	</Grid.Background>
->>>>>>> main
 
 	<!-- Foreground content -->
 	<Border CornerRadius="10"

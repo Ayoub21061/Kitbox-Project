@@ -13,10 +13,6 @@ namespace Kitbox.ViewModels
 {
     public partial class CustomerViewModel : ObservableObject
     {
-<<<<<<< HEAD
-        public Customer Customer { get; } = new Customer();
-        
-=======
         [ObservableProperty]
         public Customer customer;
 
@@ -398,6 +394,5 @@ namespace Kitbox.ViewModels
             var FinalPage = new FinalPageView();
             FinalPage.Show();
         }
->>>>>>> main
     }
 }
