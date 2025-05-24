@@ -1,16 +1,15 @@
 using Avalonia.Controls;
-using Avalonia.Input; 
+using Avalonia.Controls.Platform;
 using Kitbox.ViewModels;
 
 namespace Kitbox.Views
 {
-    public partial class CustomerView : UserControl
+    public partial class FourthPageView : Window
     {
-        public CustomerView()
+        public FourthPageView()
         {
             InitializeComponent();
             DataContext = new CustomerViewModel();
         }
-
     }
 }

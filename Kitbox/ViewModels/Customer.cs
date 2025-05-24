@@ -1,23 +1,43 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Net.Mail;
 
-namespace Kitbox.Models
+
+namespace Kitbox.ViewModels
 {
-    public partial class Customer : ObservableObject
+    [ObservableObject]
+    public partial class Customer : User
     {
-        [ObservableProperty]
-        private string id;
 
         [ObservableProperty]
-        private string email;
-        public Customer() // Constructeur par défaut qui initialise Id et Email avec string.Empty.
+        private int height;
+
+        [ObservableProperty]
+        private int width;
+
+        [ObservableProperty]
+        private int depth;
+
+        [ObservableProperty]
+        private int lockers;
+
+
+        public Customer() // Constructeur par défaut 
         {
-            Id = string.Empty;
-            Email = string.Empty;
+            Height = 0;
+            Width = 0;
+            Depth = 0;
+            Lockers = 0;
+            windowId = 2;
         }
-        public Customer(string id, string email) // Constructeur qui initialise Id et Email avec les valeurs passées en paramètre. Pour créer un client directement avec Id et email.
+        public Customer(int height, int width, int depth, int lockers) 
         {
-            Id = id;
-            Email = email;
+            Height = height;
+            Width = width;
+            Depth = depth;
+            Lockers = lockers;
+
         }
+
+        
     }
 }

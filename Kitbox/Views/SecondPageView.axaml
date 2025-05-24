@@ -1,0 +1,113 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Kitbox.ViewModels;assembly=Kitbox"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+        x:Class="Kitbox.Views.SecondPageView"
+        x:DataType="vm:CustomerViewModel"
+        Title="Kitbox's App">
+
+  <Grid Background="White">
+  <!-- Définition des rangées -->
+  <Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/>   <!-- Entête -->
+    <RowDefinition Height="Auto"/>   <!-- Message -->
+    <RowDefinition Height="*"/>      <!-- Contenu principal (remplit tout l’espace disponible) -->
+    <RowDefinition Height="Auto"/>   <!-- Pied de page toujours en bas -->
+  </Grid.RowDefinitions>
+
+  <!-- Entête -->
+  <Border Background="Red" Height="30" HorizontalAlignment="Stretch" Grid.Row="0">
+    <TextBlock Text="Lockers" Foreground="White"
+               VerticalAlignment="Center" HorizontalAlignment="Center"
+               FontSize="18" FontWeight="Bold"/>
+  </Border>
+
+  <!-- Message -->
+  <Border Grid.Row="1" Padding="10">
+    <TextBlock Text="Please enter the number of lockers you want to order."
+               Foreground="Black"
+               FontWeight="Bold"
+               FontSize="14"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+  </Border>
+
+  <!-- Contenu principal avec hauteur dynamique -->
+  <Grid Grid.Row="2">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>  <!-- Section pour saisie et commande -->
+      <ColumnDefinition Width="*"/>     <!-- Section pour l'aperçu des images -->
+    </Grid.ColumnDefinitions>
+
+    <!-- Section de saisie et bouton "Voir Aperçu" -->
+    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10,0,10,0" Padding="10">
+      <StackPanel Orientation="Vertical">
+        <TextBlock Text="Lockers" 
+                   Foreground="Black" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,5"/>
+        <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
+                                Value="{Binding Lockers, Mode=TwoWay}" 
+                                Width="100"/>
+        <Button Content="Voir Aperçu" 
+                Command="{Binding VoirApercuCommand}"
+                Margin="0,10,0,0"
+                Width="100"
+                Background="Blue"
+                Foreground="White"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Section d'affichage de l'aperçu avec ScrollViewer -->
+    <Border Grid.Column="1" Margin="10">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding ApercuLockerImages}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Vertical" Margin="10"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Image Source="avares://Kitbox/Assets/Locker.png" Width="200"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
+  </Grid>
+
+  <!-- Pied de page (toujours en bas) -->
+  <Grid Grid.Row="3">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>  <!-- Bouton Save Lockers -->
+      <ColumnDefinition Width="*"/>     <!-- Espace -->
+      <ColumnDefinition Width="Auto"/>  <!-- Bouton Next Page -->
+    </Grid.ColumnDefinitions>
+
+    <Button Content="Save Lockers" 
+            Command="{Binding SaveCommandWithLocker}"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Bottom"
+            Margin="10,10,0,10" 
+            Width="120" 
+            BorderBrush="Black" 
+            BorderThickness="3" 
+            Background="Red" 
+            Foreground="White"
+            Grid.Column="0"/>
+
+    <Button Content="Next Page"
+            Command="{Binding ThirdPageCommand}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,10,10,10"
+            BorderBrush="Black"
+            BorderThickness="3"
+            Background="Red"
+            Foreground="White"
+            Grid.Column="2"/>
+  </Grid>
+</Grid>
+
+</Window>

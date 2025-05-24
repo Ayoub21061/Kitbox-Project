@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"  
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+        xmlns:vm="using:Kitbox.ViewModels"  
+        xmlns:v="using:Kitbox.Views"  
+        x:Class="Kitbox.Views.LoginWindow"  
+        x:DataType="vm:MainWindowViewModel"  
+        Title="Kitbox">
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="10">
+        <TextBox Width="200" Margin="5" Watermark="Email" Text="{Binding Email}"/>
+        <TextBox Width="200" Margin="5" Watermark="Password" PasswordChar="*" Text="{Binding Password}"/>
+        <Button Content="Login" Width="100" Margin="5" Command="{Binding LoginCommand}"/>
+    </StackPanel>
+
+</Window>

@@ -1,0 +1,106 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Kitbox.ViewModels;assembly=Kitbox"
+        x:Class="Kitbox.Views.SixthPageView"
+        x:DataType="vm:CustomerViewModel"
+        Title="Kitbox's App"
+        Background="White">
+
+    <Grid>
+        <!-- Titre -->
+        <Border Background="Red" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <TextBlock Text="Register" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+        </Border>
+
+        <StackPanel Margin="20" VerticalAlignment="Top" Grid.Row="1">
+            <!-- Champ Email -->
+            <TextBlock Text="Enter your email:" Foreground="Black" FontSize="16" FontWeight="Bold" Margin="0,40,0,5"/>
+            <TextBox Text="{Binding Email, Mode=TwoWay}" FontSize="16" Foreground="White" Width="300"/>
+
+            <!-- Affichage de l'erreur -->
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontSize="14" Margin="0,10,0,0"/>
+
+            <TextBlock Text="{Binding Confirm}" Foreground="Red" FontSize="14" Margin="0,10,0,0" />
+
+
+            <!-- Clavier AZERTY avec une bordure -->
+            <Border BorderBrush="Black" BorderThickness="2" Padding="10" Margin="0,10,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Ligne 1 : azerty -->
+                    <Button Content="a" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="a" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                    <Button Content="z" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="z" Grid.Row="0" Grid.Column="1" Margin="5"/>
+                    <Button Content="e" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="e" Grid.Row="0" Grid.Column="2" Margin="5"/>
+                    <Button Content="r" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="r" Grid.Row="0" Grid.Column="3" Margin="5"/>
+                    <Button Content="t" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="t" Grid.Row="0" Grid.Column="4" Margin="5"/>
+                    <Button Content="y" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="y" Grid.Row="0" Grid.Column="5" Margin="5"/>
+                    <Button Content="u" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="u" Grid.Row="0" Grid.Column="6" Margin="5"/>
+                    <Button Content="i" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="i" Grid.Row="0" Grid.Column="7" Margin="5"/>
+                    <Button Content="o" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="o" Grid.Row="0" Grid.Column="8" Margin="5"/>
+                    <Button Content="p" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="p" Grid.Row="0" Grid.Column="9" Margin="5"/>
+
+                    <!-- Ligne 2 -->
+                    <Button Content="q" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="q" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                    <Button Content="s" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="s" Grid.Row="1" Grid.Column="1" Margin="5"/>
+                    <Button Content="d" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="d" Grid.Row="1" Grid.Column="2" Margin="5"/>
+                    <Button Content="f" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="f" Grid.Row="1" Grid.Column="3" Margin="5"/>
+                    <Button Content="g" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="g" Grid.Row="1" Grid.Column="4" Margin="5"/>
+                    <Button Content="h" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="h" Grid.Row="1" Grid.Column="5" Margin="5"/>
+                    <Button Content="j" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="j" Grid.Row="1" Grid.Column="6" Margin="5"/>
+                    <Button Content="k" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="k" Grid.Row="1" Grid.Column="7" Margin="5"/>
+                    <Button Content="l" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="l" Grid.Row="1" Grid.Column="8" Margin="5"/>
+                    <Button Content="m" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="m" Grid.Row="1" Grid.Column="9" Margin="5"/>
+
+                    <!-- Ligne 3 -->
+                    <Button Content="w" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="w" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                    <Button Content="x" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="x" Grid.Row="2" Grid.Column="1" Margin="5"/>
+                    <Button Content="c" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="c" Grid.Row="2" Grid.Column="2" Margin="5"/>
+                    <Button Content="v" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="v" Grid.Row="2" Grid.Column="3" Margin="5"/>
+                    <Button Content="b" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="b" Grid.Row="2" Grid.Column="4" Margin="5"/>
+                    <Button Content="n" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="n" Grid.Row="2" Grid.Column="5" Margin="5"/>
+
+                    <!-- Ligne 4 -->
+                    <Button Content="@" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="@" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                    <Button Content="." Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="." Grid.Row="3" Grid.Column="1" Margin="5"/>
+                    <Button Content="1" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="1" Grid.Row="3" Grid.Column="2" Margin="5"/>
+                    <Button Content="2" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="2" Grid.Row="3" Grid.Column="3" Margin="5"/>
+                    <Button Content="3" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="3" Grid.Row="3" Grid.Column="4" Margin="5"/>
+                    <Button Content="4" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="4" Grid.Row="3" Grid.Column="5" Margin="5"/>
+                    <Button Content="5" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="5" Grid.Row="3" Grid.Column="6" Margin="5"/>
+                    <Button Content="6" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="6" Grid.Row="3" Grid.Column="7" Margin="5"/>
+                    <Button Content="7" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="7" Grid.Row="3" Grid.Column="8" Margin="5"/>
+                    <Button Content="8" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="8" Grid.Row="3" Grid.Column="9" Margin="5"/>
+                    <Button Content="9" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="9" Grid.Row="3" Grid.Column="10" Margin="5"/>
+                    <Button Content="0" Foreground="Black" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1" Command="{Binding AppendCharacterCommand}" CommandParameter="0" Grid.Row="3" Grid.Column="11" Margin="5"/>
+                </Grid>
+            </Border>
+
+            <!-- Ligne 5 : delete & save email sur la même ligne -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Save Email" Foreground="Black" Background="Green" BorderBrush="Black" BorderThickness="1" Command="{Binding SaveEmailCommand}" Width="120" HorizontalAlignment="Left" Margin="5"/>
+                <Button Content="Delete" Foreground="Black" Background="Red" BorderBrush="Black" BorderThickness="1" Command="{Binding DeleteCharacterCommand}" Width="120" HorizontalAlignment="Right" Margin="5"/>
+                <Button Content="Next Page" Foreground="Black" Background="Red" BorderBrush="Black" BorderThickness="1" Command="{Binding FinalPageCommand}"  Width="120" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
