@@ -38,6 +38,6 @@ namespace Kitbox.ViewModels
             var secondPage = new SecondSecretaryPageView();
             secondPage.Show();
         }
-         
+    
     }
 }
