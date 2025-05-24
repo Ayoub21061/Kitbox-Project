@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:vm="using:Kitbox.ViewModels"
+       x:Class="Kitbox.Views.MainWindow"
+       x:DataType="vm:MainWindowViewModel"
+       Title="Kitbox"
+       WindowState="Maximized"
+       WindowStartupLocation="CenterScreen">
+
+<Window.Styles>
+	<StyleInclude Source="avares://Kitbox/Views/Styles.axaml"/>
+</Window.Styles>
+
+    <DockPanel>
+        <!-- Navigation bar -->
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="Gray" Margin="10">
+            <Button Content="Seller Page" Margin="5" Command="{Binding ShowSellerViewCommand}"/>
+            <Button Content="Empty Page" Margin="5" Command="{Binding ShowEmptyViewCommand}"/>
+        </StackPanel>
+
+        <!-- Zone dynamique -->
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="vm:SellerViewModel">
+                    <v:SellerView/>
+                </DataTemplate>
+                <DataTemplate DataType="vm:EmptyViewModel">
+                    <v:EmptyView/>
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+    </DockPanel>
+<Grid>
+	<!-- Full window background image -->
+	<Grid.Background>
+		<ImageBrush Source="avares://Kitbox/Assets/background_Kitbox.png"
+					Stretch="UniformToFill"/>
+	</Grid.Background>
+
+	<!-- Foreground content -->
+	<Border CornerRadius="10"
+			Background="White"
+			Padding="20"
+			Margin="20"
+			BorderBrush="#ccc"
+			BorderThickness="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center">
+		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15">
+			<TextBlock Text="Qui êtes-vous ?" FontSize="22" FontWeight="Bold" Foreground="#333" HorizontalAlignment="Center" />
+
+			<Button Content="Client"
+					Command="{Binding ShowCustomerWindow}"
+					CommandParameter="1"
+					Width="200"
+					Height="40"
+					Background="#ffcc00"
+					Foreground="Black"
+					FontWeight="SemiBold"
+					Classes="user-button"/>
+
+			<Button Content="Magasinier"
+					Command="{Binding ShowLoginWindow}"
+					CommandParameter="2"
+					Width="200"
+					Height="40"
+					Background="#00bcd4"
+					Foreground="White"
+					FontWeight="SemiBold"
+					Classes="user-button"/>
+
+			<Button Content="Secrétaire"
+					Command="{Binding ShowLoginWindow}"
+					CommandParameter="3"
+					Width="200"
+					Height="40"
+					Background="#4caf50"
+					Foreground="White"
+					FontWeight="SemiBold"
+					Classes="user-button"/>
+
+			<Button Content="Vendeur"
+					Command="{Binding ShowSellerWindow}"
+					CommandParameter="4"
+					Width="200"
+					Height="40"
+					Background="#9c27b0"
+					Foreground="White"
+					FontWeight="SemiBold"
+					Classes="user-button"/>
+		</StackPanel>
+	</Border>
+</Grid>
+</Window>
