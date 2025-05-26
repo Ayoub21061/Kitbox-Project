@@ -34,7 +34,7 @@ namespace Kitbox.ViewModels
         private bool isDimensionsReadOnly = false;
 
         [ObservableProperty]
-        private ObservableCollection<string> portes;
+        private ObservableCollection<string> ?portes;
 
         [ObservableProperty]
         private bool hasPorte;
