@@ -17,24 +17,38 @@ namespace Kitbox.ViewModels
     {
         private readonly CustomerViewModel _customerViewModel;
 
+        [ObservableProperty]
+        private string? selectedCouleur;
 
         [ObservableProperty]
-        private string? selectedCouleur; // La couleur sélectionnée
+        public string? panelLeft;
 
         [ObservableProperty]
-        private string? selectedPanel;
+        public string? panelRight;
 
         [ObservableProperty]
-        private int longueur;
+        public string? panelBottom;
 
         [ObservableProperty]
-        private int largeur;
+        public string? panelUp;
+
+        [ObservableProperty]
+        private int longueurHorizontal;
+
+        [ObservableProperty]
+        private int largeurHorizontal;
+
+        [ObservableProperty]
+        private int longueurVertical;
+
+        [ObservableProperty]
+        private int largeurVertical;
 
         [ObservableProperty]
         private bool isDimensionsReadOnly = false;
 
         [ObservableProperty]
-        private ObservableCollection<string> ?portes;
+        private ObservableCollection<string>? portes;
 
         [ObservableProperty]
         private bool hasPorte;
@@ -46,61 +60,130 @@ namespace Kitbox.ViewModels
         public IRelayCommand DeleteLockerCommand { get; }
 
         [ObservableProperty]
-        private ObservableCollection<string> panels = new ObservableCollection<string>();
+        private ObservableCollection<string> panels = new(); // Panels left/right
 
-        public int LockerIndex { get; set; }  // Indice unique pour chaque locker
+        [ObservableProperty]
+        private ObservableCollection<string> horizontalPanels = new(); // Panels up/bottom
 
-        // Propriété pour afficher l'étiquette du locker
+        // [ObservableProperty]
+        // public int panelBottomLength;
+
+        // [ObservableProperty]
+        // public int panelBottomWidth;
+
+        // [ObservableProperty]
+        // public int panelUpLength;
+
+        // [ObservableProperty]
+        // public int panelUpWidth;
+
+        public int LockerIndex { get; set; }
+
         public string LockerLabel => $"Locker {LockerIndex + 1}";
 
         public LockerViewModel(int index, CustomerViewModel customerViewModel)
         {
             _customerViewModel = customerViewModel;
-            SaveLockersViewCommand = new RelayCommand(SaveLockerData);
+            SaveLockersViewCommand = new RelayCommand(() => SaveLockerData(index));
             DeleteLockerCommand = new RelayCommand(DeleteLockerData);
             LockerIndex = index;
             _ = LoadPanelsFromDatabaseAsync();
             _ = LoadPortesFromDatabaseAsync();
+            LoadLockerData(index);
+
         }
 
-        private void SaveLockerData()
+        public void LoadLockerData(int index)
         {
             try
             {
                 string filePath = "customer_data.json";
-                List<Dictionary<string, object>> lockersList = new();
 
+                if (!File.Exists(filePath))
+                    return;
+
+                string json = File.ReadAllText(filePath);
+                var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+
+                if (data == null || !data.ContainsKey("LockersData"))
+                    return;
+
+                var lockersJson = JsonSerializer.Serialize(data["LockersData"]);
+                var lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(lockersJson);
+
+                if (lockersList == null || index >= lockersList.Count)
+                    return;
+
+                var lockerData = lockersList[index];
+
+                PanelLeft = lockerData.GetValueOrDefault("PanelLeft")?.ToString();
+                PanelRight = lockerData.GetValueOrDefault("PanelRight")?.ToString();
+                PanelBottom = lockerData.GetValueOrDefault("PanelBottom")?.ToString();
+                PanelUp = lockerData.GetValueOrDefault("PanelUp")?.ToString();
+
+                LongueurHorizontal = lockerData.TryGetValue("LongueurHorizontal", out var lH) ? Convert.ToInt32(lH) : 0;
+                LargeurHorizontal = lockerData.TryGetValue("LargeurHorizontal", out var Lh) ? Convert.ToInt32(Lh) : 0;
+                LongueurVertical = lockerData.TryGetValue("LongueurVertical", out var lV) ? Convert.ToInt32(lV) : 0;
+                LargeurVertical = lockerData.TryGetValue("LargeurVertical", out var Lv) ? Convert.ToInt32(Lv) : 0;
+
+                HasPorte = lockerData.TryGetValue("HasPorte", out var hp) && Convert.ToBoolean(hp);
+                PorteSelected = lockerData.GetValueOrDefault("TypeDePorte")?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du chargement du casier : {ex.Message}");
+            }
+        }
+
+
+        private void SaveLockerData(int index)
+        {
+            try
+            {
+                string filePath = "customer_data.json";
                 Dictionary<string, object> existingData = new Dictionary<string, object>();
+
                 if (File.Exists(filePath))
                 {
                     string existingJson = File.ReadAllText(filePath);
                     existingData = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? new Dictionary<string, object>();
                 }
 
-                var height = existingData.ContainsKey("Height") && existingData["Height"] is JsonElement heightElement ? heightElement.GetInt32() : 0;
-                var width = existingData.ContainsKey("Width") && existingData["Width"] is JsonElement widthElement ? widthElement.GetInt32() : 0;
-                var depth = existingData.ContainsKey("Depth") && existingData["Depth"] is JsonElement depthElement ? depthElement.GetInt32() : 0;
+                List<Dictionary<string, object>> lockersList = new();
 
-                var lockerData = new Dictionary<string, object>
-                {
-                    { "Panel", SelectedPanel ?? "" },
-                    { "Longueur", Longueur },
-                    { "Largeur", Largeur},
-                    { "HasPorte", HasPorte },
-                    { "TypeDePorte", PorteSelected ?? "" },
-    
-                };
-
+                // Charger la liste actuelle
                 if (existingData.ContainsKey("LockersData"))
                 {
-                    lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(JsonSerializer.Serialize(existingData["LockersData"])) ?? new List<Dictionary<string, object>>();
+                    var tempJson = JsonSerializer.Serialize(existingData["LockersData"]);
+                    lockersList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(tempJson) ?? new List<Dictionary<string, object>>();
                 }
-                lockersList.Add(lockerData);
 
+                var lockerData = new Dictionary<string, object>
+        {
+            { "PanelLeft", PanelLeft ?? "" },
+            { "PanelRight", PanelRight ?? "" },
+            { "PanelBottom", PanelBottom ?? "" },
+            { "PanelUp", PanelUp ?? "" },
+            { "LongueurHorizontal", LongueurHorizontal },
+            { "LargeurHorizontal", LargeurHorizontal },
+            { "LongueurVertical", LongueurVertical },
+            { "LargeurVertical", LargeurVertical },
+            { "HasPorte", HasPorte },
+            { "TypeDePorte", PorteSelected ?? "" }
+        };
+
+                // Mise à jour du casier à l'index correspondant
+                if (index < lockersList.Count)
+                {
+                    lockersList[index] = lockerData;
+                }
+                else
+                {
+                    lockersList.Add(lockerData);
+                }
+
+                // Mise à jour des autres données
                 existingData["LockersData"] = lockersList;
-                existingData["Height"] = height;
-                existingData["Width"] = width;
-                existingData["Depth"] = depth;
                 existingData["Lockers"] = lockersList.Count;
 
                 string newJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
@@ -112,37 +195,54 @@ namespace Kitbox.ViewModels
             }
         }
 
+
         private void DeleteLockerData()
         {
             _customerViewModel.DeleteLocker(LockerIndex);
         }
-        
 
         public async Task LoadPanelsFromDatabaseAsync()
         {
             try
             {
-                var panelsList = new ObservableCollection<string>();
+                var sideList = new ObservableCollection<string>();
+                var horizontalList = new ObservableCollection<string>();
+
                 string connectionString = "server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;";
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
                 string query = "SELECT article_name FROM Stock WHERE article_name LIKE '%Panel%'";
-                ;
 
                 using var command = new MySqlCommand(query, connection);
                 using var reader = await command.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
                 {
-                    panelsList.Add(reader.GetString("article_name"));
+                    string name = reader.GetString("article_name").ToLower();
+
+                    if (name.Contains("panel") && (name.Contains("left") || name.Contains("right")))
+                        sideList.Add(reader.GetString("article_name"));
+
+                    if (name.Contains("panel") && name.Contains("horizontal"))
+                        horizontalList.Add(reader.GetString("article_name"));
                 }
 
-                Panels = panelsList;
+                Panels = sideList;
+                HorizontalPanels = horizontalList;
 
                 if (Panels.Count > 0)
-                    SelectedPanel = Panels[0];
+                {
+                    PanelLeft = Panels[0];
+                    PanelRight = Panels[0];
+                }
+
+                if (HorizontalPanels.Count > 0)
+                {
+                    PanelBottom = HorizontalPanels[0];
+                    PanelUp = HorizontalPanels[0];
+                }
             }
             catch (Exception ex)
             {
@@ -181,63 +281,57 @@ namespace Kitbox.ViewModels
             }
         }
 
-        partial void OnSelectedPanelChanged(string? oldValue, string? newValue)
-        {
-            UpdateDimensionsFromSelectedPanel();
-        }
+        partial void OnPanelLeftChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: true);
+        partial void OnPanelRightChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: true);
+        partial void OnPanelBottomChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: false);
+        partial void OnPanelUpChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: false);
 
-        private void UpdateDimensionsFromSelectedPanel()
+        private void UpdateDimensionsFromSelectedPanel(string? panelName, bool isVertical)
         {
-            if (string.IsNullOrEmpty(SelectedPanel))
+            if (string.IsNullOrEmpty(panelName))
             {
                 IsDimensionsReadOnly = false;
                 return;
             }
 
-            // Regex pour trouver deux couples nombre+lettre entre parenthèses, séparés par 'x', peu importe l'ordre
             var regex = new System.Text.RegularExpressions.Regex(@"(\d+)\((h|p|l|H|P|L)\)\s*x\s*(\d+)\((h|p|l|H|P|L)\)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var match = regex.Match(SelectedPanel);
+            var match = regex.Match(panelName);
 
             if (match.Success)
             {
-                // Récupérer les groupes
                 var firstValue = int.Parse(match.Groups[1].Value);
                 var firstUnit = match.Groups[2].Value.ToLower();
                 var secondValue = int.Parse(match.Groups[3].Value);
                 var secondUnit = match.Groups[4].Value.ToLower();
 
-                // Initialiser variables dimension
                 int largeurParsed = 0;
                 int longueurParsed = 0;
 
-                // Assigner selon unité
-                // h = hauteur, p = profondeur, l = longueur (exemple)
-                // On suppose ici que largeur correspond à profondeur (p), longueur correspond à longueur (l) ou hauteur (h) selon contexte.
-
-                // Exemple, pour ton besoin :
-                // Largeur = valeur associée à (p)
-                // Longueur = valeur associée à (l) ou (h)
-
-                // Assigner largeur (p)
                 if (firstUnit == "p")
                     largeurParsed = firstValue;
                 else if (secondUnit == "p")
                     largeurParsed = secondValue;
 
-                // Assigner longueur (l ou h)
                 if (firstUnit == "l" || firstUnit == "h")
                     longueurParsed = firstValue;
                 else if (secondUnit == "l" || secondUnit == "h")
                     longueurParsed = secondValue;
 
-                // Si on n’a pas trouvé une dimension, on met 0 par défaut
-                Largeur = largeurParsed;
-                Longueur = longueurParsed;
+                if (isVertical)
+                {
+                    LargeurVertical = largeurParsed;
+                    LongueurVertical = longueurParsed;
+                }
+                else
+                {
+                    LargeurHorizontal = largeurParsed;
+                    LongueurHorizontal = longueurParsed;
+                }
+
                 IsDimensionsReadOnly = true;
                 return;
             }
 
-            // Sinon
             IsDimensionsReadOnly = false;
         }
     }

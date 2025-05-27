@@ -8,10 +8,10 @@
 
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- Entête -->
-            <RowDefinition Height="Auto"/>  <!-- Total Height -->
-            <RowDefinition Height="*"/>     <!-- Contenu principal -->
-            <RowDefinition Height="Auto"/>  <!-- Bouton -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Entête -->
@@ -23,35 +23,33 @@
 
         <!-- Total Length Info -->
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="10" Orientation="Vertical">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Text="The total length of your locker is :"
-                   Foreground="Black"
-                   VerticalAlignment="Center"
-                   FontSize="14"
-                   FontWeight="Bold"
-                   Margin="0,0,5,0"/>
-        <TextBlock Text="{Binding Height}"
-                   Foreground="Black"
-                   VerticalAlignment="Center"
-                   FontSize="14"
-                   FontWeight="Bold"/>
-        <TextBlock Text=" cm"
-                   Foreground="Black"
-                   VerticalAlignment="Center"
-                   FontSize="14"
-                   FontWeight="Bold"/>
-    </StackPanel>
-
-    <TextBlock Text="{Binding ValidationMessage}" Foreground="Red" FontSize="14" Margin="0,5,0,0" HorizontalAlignment="Center"/>
-</StackPanel>
-
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="The total length of your locker is :"
+                           Foreground="Black"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding Height}"
+                           Foreground="Black"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"/>
+                <TextBlock Text=" cm"
+                           Foreground="Black"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"/>
+            </StackPanel>
+            <TextBlock Text="{Binding ValidationMessage}" Foreground="Red" FontSize="14" Margin="0,5,0,0" HorizontalAlignment="Center"/>
+        </StackPanel>
 
         <!-- Contenu principal -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />  <!-- Première colonne -->
-                <ColumnDefinition Width="1*" />  <!-- Deuxième colonne -->
-                <ColumnDefinition Width="Auto" /> <!-- Troisième colonne -->
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
@@ -61,71 +59,114 @@
                             <Border BorderBrush="Black" BorderThickness="2" Margin="5" Padding="10" Background="LightGray">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/> <!-- 0 -->
+                                        <RowDefinition Height="Auto"/> <!-- 1 -->
+                                        <RowDefinition Height="Auto"/> <!-- 2 -->
+                                        <RowDefinition Height="Auto"/> <!-- 3 -->
+                                        <RowDefinition Height="Auto"/> <!-- 4 -->
+                                        <RowDefinition Height="Auto"/> <!-- 5 -->
+                                        <RowDefinition Height="Auto"/> <!-- 6 -->
+                                        <RowDefinition Height="Auto"/> <!-- 7 -->
+                                        <RowDefinition Height="Auto"/> <!-- 8 -->
+                                        <RowDefinition Height="Auto"/> <!-- 9 -->
+                                        <RowDefinition Height="Auto"/> <!-- 10 -->
+                                        <RowDefinition Height="Auto"/> <!-- 11 -->
+                                        <RowDefinition Height="Auto"/> <!-- 12 -->
+                                        <RowDefinition Height="*"/>   <!-- 13 -->
+                                        <RowDefinition Height="Auto"/> <!-- 14 -->
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Couleur -->
-                                    <TextBlock Text="Panel :" Grid.Row="0" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,0,3,0"/>
-                                    <ComboBox SelectedItem="{Binding SelectedPanel}" 
-                                            Grid.Row="0" Grid.Column="1" Width="150" 
-                                            Background="DarkGray" Foreground="White" 
-                                            VerticalAlignment="Center" 
-                                            ItemsSource="{Binding Panels}"/>
+                                    <!-- Panel Left -->
+                                    <TextBlock Text="Panel Left :" Grid.Row="0" Grid.Column="0" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding PanelLeft}" Grid.Row="0" Grid.Column="1"
+                                              Width="150" Background="DarkGray" Foreground="White"
+                                              ItemsSource="{Binding Panels}"/>
 
+                                    <!-- Panel Right -->
+                                    <TextBlock Text="Panel Right :" Grid.Row="1" Grid.Column="0" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding PanelRight}" Grid.Row="1" Grid.Column="1"
+                                              Width="150" Background="DarkGray" Foreground="White"
+                                              ItemsSource="{Binding Panels}"/>
 
-                                    <TextBox Text="{Binding Longueur, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" Padding="3" VerticalAlignment="Center"
-                                        IsReadOnly="False"/>
+                                    <!-- Panel Bottom -->
+                                    <TextBlock Text="Panel Bottom :" Grid.Row="2" Grid.Column="0"/>
+                                    <ComboBox SelectedItem="{Binding PanelBottom}" Grid.Row="2" Grid.Column="1"
+                                              Width="150" Background="DarkGray" Foreground="White"
+                                              ItemsSource="{Binding HorizontalPanels}"/>
 
-                                    <TextBox Text="{Binding Largeur, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" Padding="3" VerticalAlignment="Center"
-                                        IsReadOnly="False"/>
+                                    <!-- Panel Up -->
+                                    <TextBlock Text="Panel Up :" Grid.Row="3" Grid.Column="0"/>
+                                    <ComboBox SelectedItem="{Binding PanelUp}" Grid.Row="3" Grid.Column="1"
+                                              Width="150" Background="DarkGray" Foreground="White"
+                                              ItemsSource="{Binding HorizontalPanels}"/>
 
-
-
-                                    <!-- Checkbox Porte -->
-                                    <TextBlock Text="Porte :" Grid.Row="2" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0"/>
-                                    <CheckBox IsChecked="{Binding HasPorte}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+                                    <!-- Porte -->
+                                    <TextBlock Text="Porte :" Grid.Row="4" Grid.Column="0"/>
+                                    <CheckBox IsChecked="{Binding HasPorte}" Grid.Row="4" Grid.Column="1"/>
 
                                     <!-- Couleur Porte -->
-                                    <TextBlock Text="Couleur de la porte :" Grid.Row="3" Grid.Column="0" Foreground="Black" VerticalAlignment="Center" Margin="0,3,3,0" IsVisible="{Binding HasPorte}"/>
-                                    <ComboBox SelectedItem="{Binding PorteSelected}" Grid.Row="3" Grid.Column="1" Width="100" Background="DarkGray" Foreground="White" VerticalAlignment="Center" ItemsSource="{Binding Portes}" IsVisible="{Binding HasPorte}" />
+                                    <TextBlock Text="Couleur de la porte :" Grid.Row="5" Grid.Column="0"
+                                               IsVisible="{Binding HasPorte}"/>
+                                    <ComboBox SelectedItem="{Binding PorteSelected}" Grid.Row="5" Grid.Column="1"
+                                              Width="100" Background="DarkGray" Foreground="White"
+                                              ItemsSource="{Binding Portes}" IsVisible="{Binding HasPorte}"/>
 
+                                    <!-- Longueur Panel horizontal -->
+                                    <TextBlock Text="Longueur Horizontal :" 
+                                            Grid.Row="6" Grid.Column="0" 
+                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LongueurHorizontal, Mode=TwoWay}"
+                                            Grid.Row="6" Grid.Column="1"
+                                            Width="100" Background="DarkGray"
+                                            Foreground="White" Padding="3"
+                                            IsReadOnly="True" IsEnabled="False"/>
 
-                                    <!-- Espace vide -->
-                                    <Grid Grid.Row="5"/>
+                                    <!-- Largeur Panel horizontal -->
+                                    <TextBlock Text="Largeur Horizontal :" 
+                                            Grid.Row="7" Grid.Column="0" 
+                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LargeurHorizontal, Mode=TwoWay}"
+                                            Grid.Row="7" Grid.Column="1"
+                                            Width="100" Background="DarkGray"
+                                            Foreground="White" Padding="3"
+                                            IsReadOnly="True" IsEnabled="False"/>
+
+                                    <!-- Longueur Panel vertical -->
+                                    <TextBlock Text="Longueur Vertical :" 
+                                            Grid.Row="8" Grid.Column="0" 
+                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LongueurVertical, Mode=TwoWay}"
+                                            Grid.Row="8" Grid.Column="1"
+                                            Width="100" Background="DarkGray"
+                                            Foreground="White" Padding="3"
+                                            IsReadOnly="True" IsEnabled="False"/>
+
+                                    <!-- Largeur Panel vertical -->
+                                    <TextBlock Text="Largeur Vertical :" 
+                                            Grid.Row="9" Grid.Column="0" 
+                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LargeurVertical, Mode=TwoWay}"
+                                            Grid.Row="9" Grid.Column="1"
+                                            Width="100" Background="DarkGray"
+                                            Foreground="White" Padding="3"
+                                            IsReadOnly="True" IsEnabled="False"/>
 
                                     <!-- Boutons -->
-                                    <Button Content="Save The Locker"
-                                            Grid.Row="6"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            Margin="0,10,10,10"
-                                            Command="{Binding SaveLockersViewCommand}"
-                                            BorderBrush="Black"
-                                            BorderThickness="3"
-                                            Background="Green"
-                                            Foreground="White"/>
-
-                                    <Button Content="Supprimer" 
-                                            Command="{Binding DeleteLockerCommand}" 
-                                            CommandParameter="{Binding LockerIndex}" 
-                                            Grid.Row="6" Grid.Column="1" 
-                                            HorizontalAlignment="Right" 
-                                            VerticalAlignment="Bottom" 
-                                            Margin="0,10,10,10" 
-                                            BorderBrush="Black" 
-                                            BorderThickness="3" 
-                                            Background="Red" 
-                                            Foreground="White"/>
+                                    <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,10,0">
+                                        <Button Content="Save The Locker"
+                                                Command="{Binding SaveLockersViewCommand}"
+                                                BorderBrush="Black" BorderThickness="3"
+                                                Background="Green" Foreground="White" Margin="0,0,5,0"/>
+                                        <Button Content="Supprimer"
+                                                Command="{Binding DeleteLockerCommand}"
+                                                CommandParameter="{Binding LockerIndex}"
+                                                BorderBrush="Black" BorderThickness="3"
+                                                Background="Red" Foreground="White"/>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -133,51 +174,45 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <!-- Colonne droite remplacée par le TextBlock affichant la longueur totale -->
+            <!-- Colonne droite -->
             <Border Grid.Column="2" Background="LightGray" Margin="5">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="{Binding TotalHeight, StringFormat='Longueur totale: {0} cm'}"
-                            HorizontalAlignment="Center"
-                            Margin="0,10"
-                            FontWeight="Bold"
-                            FontSize="16"/>
-
+                               HorizontalAlignment="Center"
+                               Margin="0,10"
+                               FontWeight="Bold"
+                               FontSize="16"/>
                     <TextBlock Text="{Binding TotalWidth, StringFormat='Largeur totale: {0} cm'}"
-                            HorizontalAlignment="Center"
-                            Margin="0,10"
-                            FontWeight="Bold"
-                            FontSize="16"/>
+                               HorizontalAlignment="Center"
+                               Margin="0,10"
+                               FontWeight="Bold"
+                               FontSize="16"/>
                 </StackPanel>
             </Border>
-
         </Grid>
 
-        <!-- Bouton en bas -->
-        <Grid Grid.Row="3">
+        <!-- Boutons en bas -->
+        <!-- Boutons en bas alignés -->
+        <Grid Grid.Row="3" Margin="10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <Button Content="Save Dimension"
                     Command="{Binding SaveDimensionsCommand}"
                     Grid.Column="0"
-                    HorizontalAlignment="Center"
-                    Margin="0,10"
-                    BorderBrush="Black"
-                    BorderThickness="3"
-                    Background="Green"
-                    Foreground="White"/>
+                    HorizontalAlignment="Left"
+                    BorderBrush="Black" BorderThickness="3"
+                    Background="Green" Foreground="White"/>
 
             <Button Content="Next Page"
                     Command="{Binding FourthPageCommand}"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    Margin="0,10"
-                    BorderBrush="Black"
-                    BorderThickness="3"
-                    Background="Red"
-                    Foreground="White"/>
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    BorderBrush="Black" BorderThickness="3"
+                    Background="Red" Foreground="White"/>
         </Grid>
     </Grid>
 </Window>

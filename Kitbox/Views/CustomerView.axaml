@@ -82,7 +82,7 @@
             </Border>
 
             <!-- Image -->
-            <Image Source="avares://Kitbox/Assets/Cabinet.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="200" Grid.Column="1"/>
+            <Image Source="avares://Kitbox/Assets/Cabinet.jpg" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Width="200" Grid.Column="1"/>
         </Grid>
 
         <!-- Pied de page avec le bouton Next Page -->

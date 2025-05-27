@@ -50,13 +50,16 @@ namespace Kitbox.ViewModels
         private string validationMessage;
 
         [ObservableProperty]
-        public ObservableCollection<string> ?iron;
+        public ObservableCollection<string>? iron;
 
         [ObservableProperty]
-        public ObservableCollection<string> ?portes;
+        public string? ironDisplay;
 
         [ObservableProperty]
-        private string ?porteSelected;
+        public ObservableCollection<string>? portes;
+
+        [ObservableProperty]
+        private string? porteSelected;
 
         [ObservableProperty]
         private ObservableCollection<string> apercuLockerImages = new ObservableCollection<string>();
@@ -102,6 +105,7 @@ namespace Kitbox.ViewModels
             // Chargement des données depuis le JSON (structure + lockers)
             LoadCombinedData();
             _ = LoadAnglesFromDatabaseAsync();
+            LoadIronValue();
 
 
 
@@ -121,6 +125,39 @@ namespace Kitbox.ViewModels
             SaveEmailCommand = new RelayCommand(SaveEmail);
             SaveDimensionsCommand = new RelayCommand(SaveDimension);
         }
+
+        private void LoadIronValue()
+        {
+            try
+            {
+                string jsonPath = "customer_data.json"; // adapte le chemin si besoin
+                if (File.Exists(jsonPath))
+                {
+                    string jsonString = File.ReadAllText(jsonPath);
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    JsonElement root = doc.RootElement;
+
+                    if (root.TryGetProperty("Iron", out JsonElement ironElement))
+                    {
+                        IronDisplay = ironElement.GetString();
+                    }
+                    else
+                    {
+                        IronDisplay = "Iron key not found";
+                    }
+                }
+                else
+                {
+                    IronDisplay = "File not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                IronDisplay = $"Error: {ex.Message}";
+            }
+        }
+
+        
 
         public void SaveDimension()
         {
@@ -153,8 +190,8 @@ namespace Kitbox.ViewModels
                     var lockersData = data["LockersData"].EnumerateArray();
                     foreach (var locker in lockersData)
                     {
-                        int longueur = locker.TryGetProperty("Longueur", out var l) ? l.GetInt32() : 0;
-                        int largeur = locker.TryGetProperty("Largeur", out var w) ? w.GetInt32() : 0;
+                        int longueur = locker.TryGetProperty("LongueurVertical", out var l) ? l.GetInt32() : 0;
+                        int largeur = locker.TryGetProperty("LargeurHorizontal", out var w) ? w.GetInt32() : 0;
 
                         totalHeight += longueur;
                         totalWidth += largeur;
@@ -299,7 +336,7 @@ namespace Kitbox.ViewModels
                     Depth = data.ContainsKey("Depth") ? data["Depth"].GetInt32() : 0;
                     Lockers = data.ContainsKey("Lockers") ? data["Lockers"].GetInt32() : 0;
                     SelectedIron = data.ContainsKey("Iron") ? data["Iron"].GetString() : "";
-                    TotalHeight = CalculateSumLengthFromJson();
+                    TotalHeight = CalculateSumLengthVerticalFromJson();
 
                     // Mise à jour du tableau "Structure de l'armoire" avec la classe ArmoryStructureRow
                     StructureArmory.Clear();
@@ -319,10 +356,17 @@ namespace Kitbox.ViewModels
                         {
                             var locker = new LockerViewModel(index, this)
                             {
-                                SelectedCouleur = lockerData.TryGetProperty("Couleur", out var couleur) ? couleur.GetString() : "",
-                                Longueur = lockerData.TryGetProperty("Longueur", out var longueur) ? longueur.GetInt32() : 0,
+                                LongueurHorizontal = lockerData.TryGetProperty("LongueurHorizontal", out var longueurHorizontal) ? longueurHorizontal.GetInt32() : 0,
+                                LargeurHorizontal = lockerData.TryGetProperty("LargeurHorizontal", out var largeurHorizontal) ? largeurHorizontal.GetInt32() : 0,
+                                LongueurVertical = lockerData.TryGetProperty("LongueurVertical", out var longueurVertical) ? longueurVertical.GetInt32() : 0,
+                                LargeurVertical = lockerData.TryGetProperty("LargeurVertical", out var largeurVertical) ? largeurVertical.GetInt32() : 0,
                                 HasPorte = lockerData.TryGetProperty("HasPorte", out var hasPorte) ? hasPorte.GetBoolean() : false,
                                 PorteSelected = lockerData.TryGetProperty("TypeDePorte", out var porteSelected) ? porteSelected.GetString() : "",
+                                PanelLeft = lockerData.TryGetProperty("PanelLeft", out var panelLeft) ? panelLeft.GetString() : "",
+                                PanelRight = lockerData.TryGetProperty("PanelRight", out var panelRight) ? panelRight.GetString() : "",
+                                PanelBottom = lockerData.TryGetProperty("PanelBottom", out var panelBottom) ? panelBottom.GetString() : "",
+                                PanelUp = lockerData.TryGetProperty("PanelUp", out var panelUp) ? panelUp.GetString() : "",
+
                             };
                             LockersList.Add(locker);
                             index++;
@@ -480,7 +524,7 @@ namespace Kitbox.ViewModels
             }
         }
 
-        public int CalculateSumLengthFromJson()
+        public int CalculateSumLengthVerticalFromJson()
         {
             string filePath = "customer_data.json";
             if (!File.Exists(filePath))
@@ -491,19 +535,19 @@ namespace Kitbox.ViewModels
             if (data == null || !data.ContainsKey("LockersData"))
                 return 0;
 
-            int sumLength = 0;
+            int sumLengthVertical = 0;
             var lockersArray = data["LockersData"].EnumerateArray();
             foreach (var locker in lockersArray)
             {
-                if (locker.TryGetProperty("Longueur", out JsonElement longueurProp))
+                if (locker.TryGetProperty("LongueurVertical", out JsonElement longueurVertProp))
                 {
-                    sumLength += longueurProp.GetInt32();
+                    sumLengthVertical += longueurVertProp.GetInt32();
                 }
             }
-            return sumLength;
+            return sumLengthVertical;
         }
 
-        public int CalculateSumWidthFromJson()
+        public int CalculateSumWidthHorizontalFromJson()
         {
             string filePath = "customer_data.json";
             if (!File.Exists(filePath))
@@ -514,22 +558,23 @@ namespace Kitbox.ViewModels
             if (data == null || !data.ContainsKey("LockersData"))
                 return 0;
 
-            int sumWidth = 0;
+            int sumWidthHorizontal = 0;
             var lockersArray = data["LockersData"].EnumerateArray();
             foreach (var locker in lockersArray)
             {
-                if (locker.TryGetProperty("Largeur", out JsonElement largeurProp))
+                if (locker.TryGetProperty("LargeurHorizontal", out JsonElement largeurHorProp))
                 {
-                    sumWidth += largeurProp.GetInt32();
+                    sumWidthHorizontal += largeurHorProp.GetInt32();
                 }
             }
-            return sumWidth;
+            return sumWidthHorizontal;
         }
+
 
         public bool CanGoNextPage()
         {
-            int totalLength = CalculateSumLengthFromJson(); // longueur totale des lockers
-            int totalWidth = CalculateSumWidthFromJson();   // largeur totale des lockers (à implémenter)
+            int totalLength = CalculateSumLengthVerticalFromJson(); // longueur totale des lockers
+            int totalWidth = CalculateSumWidthHorizontalFromJson();   // largeur totale des lockers (à implémenter)
 
             bool lengthExceeded = totalLength > Height;
             bool widthExceeded = totalWidth > Width;
@@ -554,9 +599,6 @@ namespace Kitbox.ViewModels
             ErrorMessage = string.Empty;
             return true;
         }
-
-
-
 
         private void SecondNextPage()
         {
