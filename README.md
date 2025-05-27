@@ -68,6 +68,20 @@ Kitbox/
 
 ## 📸 Demo Images
 
+* Home Page
+![image](https://github.com/user-attachments/assets/8d3f8665-3e04-4eb3-b077-b61279d26bd4)
+
+* Kitbox Customization
+![image](https://github.com/user-attachments/assets/0d5cd199-0f07-429d-9aa9-d773233c7484)
+
+* Order sent to stockKeeper
+![image](https://github.com/user-attachments/assets/cfaae1a2-01d0-4bdf-a854-a960e0ad6031)
+
+* Secretary View  
+![image](https://github.com/user-attachments/assets/a4e76567-5d59-4fdf-8a57-cd693b1d8087)
+
+* StockKeeper View
+![image](https://github.com/user-attachments/assets/ec5828e0-9884-4000-b7ce-3e61427c22f4)
 
 
 ---
