@@ -69,7 +69,7 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <Image Source="avares://Kitbox/Assets/Locker.png" Width="200"/>
+              <Image Source="avares://Kitbox/Assets/Cabinet.png" Width="200"/>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
