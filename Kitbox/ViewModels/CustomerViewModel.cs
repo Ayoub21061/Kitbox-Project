@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -62,7 +63,14 @@ namespace Kitbox.ViewModels
         private string? porteSelected;
 
         [ObservableProperty]
+        public decimal totalPrice;
+
+        [ObservableProperty]
         private ObservableCollection<string> apercuLockerImages = new ObservableCollection<string>();
+
+        public ObservableCollection<LockerData> LockersData { get; set; } = new ObservableCollection<LockerData>();
+
+
 
 
         public string ErrorMessage { get; set; } = "";
@@ -82,6 +90,8 @@ namespace Kitbox.ViewModels
         public IRelayCommand DeleteCharacterCommand { get; }
         public IRelayCommand SaveEmailCommand { get; }
         public IRelayCommand SaveDimensionsCommand { get; }
+        public IRelayCommand ShowDetailsCommand { get; }
+
 
         // Collection pour les données des lockers
         public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
@@ -106,6 +116,7 @@ namespace Kitbox.ViewModels
             LoadCombinedData();
             _ = LoadAnglesFromDatabaseAsync();
             LoadIronValue();
+            LoadCustomerData();
 
 
 
@@ -124,6 +135,73 @@ namespace Kitbox.ViewModels
             DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
             SaveEmailCommand = new RelayCommand(SaveEmail);
             SaveDimensionsCommand = new RelayCommand(SaveDimension);
+            ShowDetailsCommand = new RelayCommand(ShowPriceDetails);
+        }
+
+        private void ShowPriceDetails()
+        {
+            using var connection = new MySqlConnection("server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;");
+            connection.Open();
+
+            decimal totalPrice = 0;
+
+            var articles = new List<string>();
+
+            foreach (var locker in LockersData)
+            {
+                if (!string.IsNullOrEmpty(locker.PanelLeft))
+                    articles.Add(locker.PanelLeft);
+                if (!string.IsNullOrEmpty(locker.PanelRight))
+                    articles.Add(locker.PanelRight);
+                if (!string.IsNullOrEmpty(locker.PanelBottom))
+                    articles.Add(locker.PanelBottom);
+                if (!string.IsNullOrEmpty(locker.PanelUp))
+                    articles.Add(locker.PanelUp);
+                if (!string.IsNullOrEmpty(locker.TypeDePorte) && locker.TypeDePorte != "No Door")
+                    articles.Add(locker.TypeDePorte);
+            }
+
+            if (!string.IsNullOrEmpty(SelectedIron))
+                articles.Add(SelectedIron); // Ajouter l’élément principal Iron
+
+            foreach (var article in articles.Distinct())
+            {
+                var getProductIdCmd = new MySqlCommand("SELECT product_id FROM Stock WHERE article_name = @article", connection);
+                getProductIdCmd.Parameters.AddWithValue("@article", article);
+                var productId = getProductIdCmd.ExecuteScalar()?.ToString();
+
+                if (productId != null)
+                {
+                    var getPriceCmd = new MySqlCommand("SELECT article_price FROM Supplier_Product WHERE product_id = @id", connection);
+                    getPriceCmd.Parameters.AddWithValue("@id", productId);
+                    var price = getPriceCmd.ExecuteScalar();
+                    if (price != null)
+                        totalPrice += Convert.ToDecimal(price);
+                }
+            }
+
+            // Affiche le total
+            TotalPrice = totalPrice;
+        }
+
+
+        private void LoadCustomerData()
+        {
+            var jsonPath = "customer_data.json";
+            if (File.Exists(jsonPath))
+            {
+                var json = File.ReadAllText(jsonPath);
+                var doc = JsonSerializer.Deserialize<CustomerJsonData>(json);
+                if (doc?.LockersData != null)
+                {
+                    LockersData = new ObservableCollection<LockerData>(doc.LockersData);
+                }
+            }
+        }
+
+        private class CustomerJsonData
+        {
+            public List<LockerData>? LockersData { get; set; }
         }
 
         private void LoadIronValue()
@@ -157,7 +235,7 @@ namespace Kitbox.ViewModels
             }
         }
 
-        
+
 
         public void SaveDimension()
         {
