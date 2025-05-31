@@ -9,8 +9,8 @@ namespace Kitbox.ViewModels
     {
         private int _userWindowId;
         private int _inputNumber;
-        private string _email;
-        private string _password;
+        private string ?_email;
+        private string ?_password;
 
         private readonly Dictionary<string, string> _stockkeeperCredentials = new Dictionary<string, string>
             {
