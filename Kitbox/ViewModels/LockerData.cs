@@ -8,6 +8,11 @@ public class LockerData
     public int LargeurHorizontal { get; set; }
     public int LongueurVertical { get; set; }
     public int LargeurVertical { get; set; }
+
+    public string? CrossbarLeft { get; set; }
+    public string? CrossbarRight { get; set; }
+    public string? CrossbarBack { get; set; }
+    public string? BattenSelected { get; set; }
     public bool HasPorte { get; set; }
     public string? TypeDePorte { get; set; }
 }

@@ -65,18 +65,24 @@ namespace Kitbox.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> horizontalPanels = new(); // Panels up/bottom
 
-        // [ObservableProperty]
-        // public int panelBottomLength;
+        [ObservableProperty]
+        private ObservableCollection<string> battens = new(); // Battens
 
-        // [ObservableProperty]
-        // public int panelBottomWidth;
+        [ObservableProperty]
+        public string? battenSelected;
 
-        // [ObservableProperty]
-        // public int panelUpLength;
+        [ObservableProperty]
+        public ObservableCollection<string> crossbarsSides = new();
 
-        // [ObservableProperty]
-        // public int panelUpWidth;
+        [ObservableProperty]
+        public ObservableCollection<string> crossbarsBacks = new();
 
+        [ObservableProperty]
+        public string? crossbarLeft;
+        [ObservableProperty]
+        public string? crossbarRight;
+        [ObservableProperty]
+        public string? crossbarBack;
         public int LockerIndex { get; set; }
 
         public string LockerLabel => $"Locker {LockerIndex + 1}";
@@ -89,6 +95,8 @@ namespace Kitbox.ViewModels
             LockerIndex = index;
             _ = LoadPanelsFromDatabaseAsync();
             _ = LoadPortesFromDatabaseAsync();
+            _ = LoadBattenFromDatabaseAsync();
+            _ = LoadCrossbarsFromDatabaseAsync();
             LoadLockerData(index);
 
         }
@@ -128,6 +136,11 @@ namespace Kitbox.ViewModels
 
                 HasPorte = lockerData.TryGetValue("HasPorte", out var hp) && Convert.ToBoolean(hp);
                 PorteSelected = lockerData.GetValueOrDefault("TypeDePorte")?.ToString();
+
+                CrossbarLeft = lockerData.GetValueOrDefault("CrossbarLeft")?.ToString();
+                CrossbarRight = lockerData.GetValueOrDefault("CrossbarRight")?.ToString();
+                CrossbarBack = lockerData.GetValueOrDefault("CrossbarBack")?.ToString();
+                BattenSelected = lockerData.GetValueOrDefault("BattenSelected")?.ToString();
             }
             catch (Exception ex)
             {
@@ -169,7 +182,11 @@ namespace Kitbox.ViewModels
             { "LongueurVertical", LongueurVertical },
             { "LargeurVertical", LargeurVertical },
             { "HasPorte", HasPorte },
-            { "TypeDePorte", PorteSelected ?? "" }
+            { "TypeDePorte", PorteSelected ?? "" },
+            { "CrossbarLeft", CrossbarLeft ?? "" },
+            { "CrossbarRight", CrossbarRight ?? "" },
+            { "CrossbarBack", CrossbarBack ?? "" },
+            { "BattenSelected", BattenSelected ?? "" },
         };
 
                 // Mise à jour du casier à l'index correspondant
@@ -280,6 +297,87 @@ namespace Kitbox.ViewModels
                 Console.WriteLine($"Erreur chargement des portes : {ex.Message}");
             }
         }
+
+        public async Task LoadBattenFromDatabaseAsync()
+        {
+            try
+            {
+                var battenList = new ObservableCollection<string>();
+                string connectionString = "server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;";
+
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                string query = "SELECT article_name FROM Stock WHERE article_name LIKE '%Batten%'";
+
+                using var command = new MySqlCommand(query, connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    battenList.Add(reader.GetString("article_name"));
+                }
+
+                Battens = battenList;
+
+                if (Battens.Count > 0)
+                    BattenSelected = Battens[0];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur chargement des Battens : {ex.Message}");
+            }
+        }
+
+        public async Task LoadCrossbarsFromDatabaseAsync()
+        {
+            try
+            {
+                var crossbarSides = new ObservableCollection<string>();
+                var crossbarBacks = new ObservableCollection<string>();
+
+                string connectionString = "server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;";
+
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                string query = "SELECT article_name FROM Stock WHERE article_name LIKE '%Crossbar%'";
+
+                using var command = new MySqlCommand(query, connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    string name = reader.GetString("article_name").ToLower();
+
+                    if (name.Contains("crossbar") && (name.Contains("left") || name.Contains("right")))
+                        crossbarSides.Add(reader.GetString("article_name"));
+
+                    if (name.Contains("crossbar") && name.Contains("back"))
+                        crossbarBacks.Add(reader.GetString("article_name"));
+                }
+
+                CrossbarsSides = crossbarSides;
+                CrossbarsBacks = crossbarBacks;
+
+                if (CrossbarsSides.Count > 0)
+                {
+                    CrossbarLeft = CrossbarsSides[0];
+                    CrossbarRight = CrossbarsSides[0];
+                }
+
+                if (CrossbarsBacks.Count > 0)
+                {
+                    CrossbarBack = CrossbarsBacks[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur chargement crossbars : {ex.Message}");
+            }
+        }
+
+
 
         partial void OnPanelLeftChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: true);
         partial void OnPanelRightChanged(string? oldValue, string? newValue) => UpdateDimensionsFromSelectedPanel(newValue, isVertical: true);

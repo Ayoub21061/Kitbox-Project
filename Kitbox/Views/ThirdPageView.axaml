@@ -59,101 +59,103 @@
                             <Border BorderBrush="Black" BorderThickness="2" Margin="5" Padding="10" Background="LightGray">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/> <!-- 0 -->
-                                        <RowDefinition Height="Auto"/> <!-- 1 -->
-                                        <RowDefinition Height="Auto"/> <!-- 2 -->
-                                        <RowDefinition Height="Auto"/> <!-- 3 -->
-                                        <RowDefinition Height="Auto"/> <!-- 4 -->
-                                        <RowDefinition Height="Auto"/> <!-- 5 -->
-                                        <RowDefinition Height="Auto"/> <!-- 6 -->
-                                        <RowDefinition Height="Auto"/> <!-- 7 -->
-                                        <RowDefinition Height="Auto"/> <!-- 8 -->
-                                        <RowDefinition Height="Auto"/> <!-- 9 -->
-                                        <RowDefinition Height="Auto"/> <!-- 10 -->
-                                        <RowDefinition Height="Auto"/> <!-- 11 -->
-                                        <RowDefinition Height="Auto"/> <!-- 12 -->
-                                        <RowDefinition Height="*"/>   <!-- 13 -->
-                                        <RowDefinition Height="Auto"/> <!-- 14 -->
+                                        <RowDefinition Height="Auto"/> <!-- 0 : Panel Left -->
+                                        <RowDefinition Height="Auto"/> <!-- 1 : Panel Right -->
+                                        <RowDefinition Height="Auto"/> <!-- 2 : Panel Bottom -->
+                                        <RowDefinition Height="Auto"/> <!-- 3 : Panel Up -->
+                                        <RowDefinition Height="Auto"/> <!-- 4 : Door Option -->
+                                        <RowDefinition Height="Auto"/> <!-- 5 : Door Color -->
+                                        <RowDefinition Height="Auto"/> <!-- 6 : Horizontal Height -->
+                                        <RowDefinition Height="Auto"/> <!-- 7 : Horizontal Width -->
+                                        <RowDefinition Height="Auto"/> <!-- 8 : Vertical Height -->
+                                        <RowDefinition Height="Auto"/> <!-- 9 : Vertical Width -->
+                                        <RowDefinition Height="Auto"/> <!-- 10 : Boutons -->
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/> <!-- Labels -->
+                                        <ColumnDefinition Width="150"/>   <!-- Inputs -->
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>   <!-- Crossbars -->
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Panel Left -->
-                                    <TextBlock Text="Panel Left :" Grid.Row="0" Grid.Column="0" Margin="0,3,3,0"/>
+                                    <TextBlock Text="Panel Left :" Grid.Row="0" Grid.Column="0" Margin="0,3,3,0" VerticalAlignment="Center"/>
                                     <ComboBox SelectedItem="{Binding PanelLeft}" Grid.Row="0" Grid.Column="1"
-                                              Width="150" Background="DarkGray" Foreground="White"
-                                              ItemsSource="{Binding Panels}"/>
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding Panels}"/>
 
                                     <!-- Panel Right -->
-                                    <TextBlock Text="Panel Right :" Grid.Row="1" Grid.Column="0" Margin="0,3,3,0"/>
+                                    <TextBlock Text="Panel Right :" Grid.Row="1" Grid.Column="0" Margin="0,3,3,0" VerticalAlignment="Center"/>
                                     <ComboBox SelectedItem="{Binding PanelRight}" Grid.Row="1" Grid.Column="1"
-                                              Width="150" Background="DarkGray" Foreground="White"
-                                              ItemsSource="{Binding Panels}"/>
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding Panels}"/>
 
                                     <!-- Panel Bottom -->
-                                    <TextBlock Text="Panel Bottom :" Grid.Row="2" Grid.Column="0"/>
+                                    <TextBlock Text="Panel Bottom :" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
                                     <ComboBox SelectedItem="{Binding PanelBottom}" Grid.Row="2" Grid.Column="1"
-                                              Width="150" Background="DarkGray" Foreground="White"
-                                              ItemsSource="{Binding HorizontalPanels}"/>
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding HorizontalPanels}"/>
 
                                     <!-- Panel Up -->
-                                    <TextBlock Text="Panel Up :" Grid.Row="3" Grid.Column="0"/>
+                                    <TextBlock Text="Panel Up :" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
                                     <ComboBox SelectedItem="{Binding PanelUp}" Grid.Row="3" Grid.Column="1"
-                                              Width="150" Background="DarkGray" Foreground="White"
-                                              ItemsSource="{Binding HorizontalPanels}"/>
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding HorizontalPanels}"/>
 
-                                    <!-- Porte -->
-                                    <TextBlock Text="Porte :" Grid.Row="4" Grid.Column="0"/>
-                                    <CheckBox IsChecked="{Binding HasPorte}" Grid.Row="4" Grid.Column="1"/>
+                                    <!-- Door Option -->
+                                    <TextBlock Text="Door Option:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <CheckBox IsChecked="{Binding HasPorte}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
 
-                                    <!-- Couleur Porte -->
-                                    <TextBlock Text="Couleur de la porte :" Grid.Row="5" Grid.Column="0"
-                                               IsVisible="{Binding HasPorte}"/>
+                                    <!-- Door Color -->
+                                    <TextBlock Text="Door :" Grid.Row="5" Grid.Column="0" 
+                                            IsVisible="{Binding HasPorte}" VerticalAlignment="Center"/>
                                     <ComboBox SelectedItem="{Binding PorteSelected}" Grid.Row="5" Grid.Column="1"
-                                              Width="100" Background="DarkGray" Foreground="White"
-                                              ItemsSource="{Binding Portes}" IsVisible="{Binding HasPorte}"/>
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding Portes}" IsVisible="{Binding HasPorte}"/>
 
-                                    <!-- Longueur Panel horizontal -->
-                                    <TextBlock Text="Longueur Horizontal :" 
-                                            Grid.Row="6" Grid.Column="0" 
-                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <TextBox Text="{Binding LongueurHorizontal, Mode=TwoWay}"
-                                            Grid.Row="6" Grid.Column="1"
-                                            Width="100" Background="DarkGray"
-                                            Foreground="White" Padding="3"
-                                            IsReadOnly="True" IsEnabled="False"/>
+                                    <!-- Horizontal Height -->
+                                    <TextBlock Text="Horizontal Height:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LongueurHorizontal, Mode=TwoWay}" Grid.Row="6" Grid.Column="1"
+                                            Background="DarkGray" Foreground="White" Padding="3" IsReadOnly="True" IsEnabled="False"/>
 
-                                    <!-- Largeur Panel horizontal -->
-                                    <TextBlock Text="Largeur Horizontal :" 
-                                            Grid.Row="7" Grid.Column="0" 
-                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <TextBox Text="{Binding LargeurHorizontal, Mode=TwoWay}"
-                                            Grid.Row="7" Grid.Column="1"
-                                            Width="100" Background="DarkGray"
-                                            Foreground="White" Padding="3"
-                                            IsReadOnly="True" IsEnabled="False"/>
+                                    <!-- Horizontal Width -->
+                                    <TextBlock Text="Horizontal Width:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LargeurHorizontal, Mode=TwoWay}" Grid.Row="7" Grid.Column="1"
+                                            Background="DarkGray" Foreground="White" Padding="3" IsReadOnly="True" IsEnabled="False"/>
 
-                                    <!-- Longueur Panel vertical -->
-                                    <TextBlock Text="Longueur Vertical :" 
-                                            Grid.Row="8" Grid.Column="0" 
-                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <TextBox Text="{Binding LongueurVertical, Mode=TwoWay}"
-                                            Grid.Row="8" Grid.Column="1"
-                                            Width="100" Background="DarkGray"
-                                            Foreground="White" Padding="3"
-                                            IsReadOnly="True" IsEnabled="False"/>
+                                    <!-- Vertical Height -->
+                                    <TextBlock Text="Vertical Height:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LongueurVertical, Mode=TwoWay}" Grid.Row="8" Grid.Column="1"
+                                            Background="DarkGray" Foreground="White" Padding="3" IsReadOnly="True" IsEnabled="False"/>
 
-                                    <!-- Largeur Panel vertical -->
-                                    <TextBlock Text="Largeur Vertical :" 
-                                            Grid.Row="9" Grid.Column="0" 
-                                            VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <TextBox Text="{Binding LargeurVertical, Mode=TwoWay}"
-                                            Grid.Row="9" Grid.Column="1"
-                                            Width="100" Background="DarkGray"
-                                            Foreground="White" Padding="3"
-                                            IsReadOnly="True" IsEnabled="False"/>
+                                    <!-- Vertical Width -->
+                                    <TextBlock Text="Vertical Width:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBox Text="{Binding LargeurVertical, Mode=TwoWay}" Grid.Row="9" Grid.Column="1"
+                                            Background="DarkGray" Foreground="White" Padding="3" IsReadOnly="True" IsEnabled="False"/>
+
+                                    <!-- Crossbar Left -->
+                                    <TextBlock Text="Crossbar Left :" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding CrossbarLeft}" Grid.Row="0" Grid.Column="3"
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding CrossbarsSides}" Width="150"/>
+
+                                    <!-- Crossbar Right -->
+                                    <TextBlock Text="Crossbar Right :" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding CrossbarRight}" Grid.Row="1" Grid.Column="3"
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding CrossbarsSides}" Width="150"/>
+
+                                    <!-- Crossbar Back -->
+                                    <TextBlock Text="Crossbar Back :" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding CrossbarBack}" Grid.Row="2" Grid.Column="3"
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding CrossbarsBacks}" Width="150"/>
+
+                                    <!-- Batten -->
+                                    <TextBlock Text="Batten :" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="0,3,3,0"/>
+                                    <ComboBox SelectedItem="{Binding BattenSelected}" Grid.Row="3" Grid.Column="3"
+                                            Background="DarkGray" Foreground="White"
+                                            ItemsSource="{Binding Battens}" Width="150"/>
 
                                     <!-- Boutons -->
                                     <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,10,0">
@@ -174,15 +176,16 @@
                 </ItemsControl>
             </ScrollViewer>
 
+
             <!-- Colonne droite -->
             <Border Grid.Column="2" Background="LightGray" Margin="5">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding TotalHeight, StringFormat='Longueur totale: {0} cm'}"
+                    <TextBlock Text="{Binding TotalHeight, StringFormat='Total Height: {0} cm'}"
                                HorizontalAlignment="Center"
                                Margin="0,10"
                                FontWeight="Bold"
                                FontSize="16"/>
-                    <TextBlock Text="{Binding TotalWidth, StringFormat='Largeur totale: {0} cm'}"
+                    <TextBlock Text="{Binding TotalWidth, StringFormat='Total Width: {0} cm'}"
                                HorizontalAlignment="Center"
                                Margin="0,10"
                                FontWeight="Bold"

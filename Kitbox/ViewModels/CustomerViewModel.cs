@@ -1,3 +1,4 @@
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -91,6 +92,7 @@ namespace Kitbox.ViewModels
         public IRelayCommand SaveEmailCommand { get; }
         public IRelayCommand SaveDimensionsCommand { get; }
         public IRelayCommand ShowDetailsCommand { get; }
+        public IRelayCommand BackToHomeCommand { get; }
 
 
         // Collection pour les données des lockers
@@ -130,12 +132,16 @@ namespace Kitbox.ViewModels
             FifthPageCommand = new RelayCommand(FifthNextPage);
             SixthPageCommand = new RelayCommand(SixthNextPage);
             FinalPageCommand = new RelayCommand(FinalPage);
+            BackToHomeCommand = new RelayCommand(ReturnFirstPage);
             VoirApercuCommand = new RelayCommand(ExecuteVoirApercu);
             AppendCharacterCommand = new RelayCommand<string>(AppendCharacter);
             DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
             SaveEmailCommand = new RelayCommand(SaveEmail);
             SaveDimensionsCommand = new RelayCommand(SaveDimension);
             ShowDetailsCommand = new RelayCommand(ShowPriceDetails);
+
+
+
         }
 
         private void ShowPriceDetails()
@@ -444,6 +450,10 @@ namespace Kitbox.ViewModels
                                 PanelRight = lockerData.TryGetProperty("PanelRight", out var panelRight) ? panelRight.GetString() : "",
                                 PanelBottom = lockerData.TryGetProperty("PanelBottom", out var panelBottom) ? panelBottom.GetString() : "",
                                 PanelUp = lockerData.TryGetProperty("PanelUp", out var panelUp) ? panelUp.GetString() : "",
+                                CrossbarLeft = lockerData.TryGetProperty("CrossbarLeft", out var crossbarLeft) ? crossbarLeft.GetString() : "",
+                                CrossbarRight = lockerData.TryGetProperty("CrossbarRight", out var crossbarRight) ? crossbarRight.GetString() : "",
+                                CrossbarBack = lockerData.TryGetProperty("CrossbarBack", out var crossbarBack) ? crossbarBack.GetString() : "",
+                                BattenSelected = lockerData.TryGetProperty("BattenSelected", out var battenSelected) ? battenSelected.GetString() : "",
 
                             };
                             LockersList.Add(locker);
@@ -714,6 +724,12 @@ namespace Kitbox.ViewModels
         {
             var FinalPage = new FinalPageView();
             FinalPage.Show();
+        }
+
+        private void ReturnFirstPage()
+        {
+            var mainwindow = new MainWindow();
+            mainwindow.Show();
         }
     }
 }

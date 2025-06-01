@@ -14,7 +14,7 @@
 
         <!-- Header -->
         <Border Background="Red" Height="40" HorizontalAlignment="Stretch" Grid.Row="0">
-            <TextBlock Text="Résumé de la commande"
+            <TextBlock Text="Customer's Summary"
                        Foreground="White"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
@@ -26,39 +26,39 @@
         <ScrollViewer Grid.Row="1" Margin="10">
             <StackPanel Spacing="15">
 
-                <TextBlock Text="Liste des casiers :" FontWeight="Bold" FontSize="18" Foreground="Black"/>
+                <TextBlock Text="Summary :" FontWeight="Bold" FontSize="18" Foreground="Black"/>
 
                 <!-- Table headers -->
                 <StackPanel Orientation="Horizontal" Spacing="2">
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="150">
-                        <TextBlock Text="Panel Gauche" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Panel Left" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="150">
-                        <TextBlock Text="Panel Droit" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Panel Right" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="150">
-                        <TextBlock Text="Panel Bas" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Panel Bottom" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="150">
-                        <TextBlock Text="Panel Haut" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Panel Up" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                        <TextBlock Text="Long. Horiz." HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Crossbar Left" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                        <TextBlock Text="Larg. Horiz." HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Crossbar Right" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                        <TextBlock Text="Long. Vert." HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Crossbar Back" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                        <TextBlock Text="Larg. Vert." HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Batten" HorizontalAlignment="Center" Foreground="Black"/> 
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="80">
-                        <TextBlock Text="Avec Porte" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Door" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                        <TextBlock Text="Type de Porte" HorizontalAlignment="Center" Foreground="Black"/>
+                        <TextBlock Text="Door chosen" HorizontalAlignment="Center" Foreground="Black"/>
                     </Border>
                 </StackPanel>
 
@@ -80,16 +80,16 @@
                                     <TextBlock Text="{Binding PanelUp}" HorizontalAlignment="Center" Foreground="Black"/>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                                    <TextBlock Text="{Binding LongueurHorizontal}" HorizontalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding CrossbarLeft}" HorizontalAlignment="Center" Foreground="Black"/>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                                    <TextBlock Text="{Binding LargeurHorizontal}" HorizontalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding CrossbarRight}" HorizontalAlignment="Center" Foreground="Black"/>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                                    <TextBlock Text="{Binding LongueurVertical}" HorizontalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding CrossbarBack}" HorizontalAlignment="Center" Foreground="Black"/>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="100">
-                                    <TextBlock Text="{Binding LargeurVertical}" HorizontalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding BattenSelected}" HorizontalAlignment="Center" Foreground="Black"/>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="80">
                                     <TextBlock Text="{Binding HasPorte}" HorizontalAlignment="Center" Foreground="Black"/>
@@ -120,7 +120,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Afficher détails -->
-            <Button Content="Afficher plus de détails"
+            <Button Content="Price Display"
                     Grid.Column="0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"

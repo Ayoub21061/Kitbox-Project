@@ -49,7 +49,7 @@
         <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
                                 Value="{Binding Lockers, Mode=TwoWay}" 
                                 Width="100"/>
-        <Button Content="Voir Aperçu" 
+        <Button Content="Preview" 
                 Command="{Binding VoirApercuCommand}"
                 Margin="0,10,0,0"
                 Width="100"
