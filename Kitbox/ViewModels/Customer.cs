@@ -5,7 +5,7 @@ using System.Net.Mail;
 namespace Kitbox.ViewModels
 {
     [ObservableObject]
-    public partial class Customer : User
+    public partial class Customer : AppUser
     {
 
         [ObservableProperty]

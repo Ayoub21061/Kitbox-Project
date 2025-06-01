@@ -11,6 +11,25 @@
 	<StyleInclude Source="avares://Kitbox/Views/Styles.axaml"/>
 </Window.Styles>
 
+    <DockPanel>
+        <!-- Navigation bar -->
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="Gray" Margin="10">
+            <Button Content="Seller Page" Margin="5" Command="{Binding ShowSellerViewCommand}"/>
+            <Button Content="Empty Page" Margin="5" Command="{Binding ShowEmptyViewCommand}"/>
+        </StackPanel>
+
+        <!-- Zone dynamique -->
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="vm:SellerViewModel">
+                    <v:SellerView/>
+                </DataTemplate>
+                <DataTemplate DataType="vm:EmptyViewModel">
+                    <v:EmptyView/>
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+    </DockPanel>
 <Grid>
 	<!-- Full window background image -->
 	<Grid.Background>

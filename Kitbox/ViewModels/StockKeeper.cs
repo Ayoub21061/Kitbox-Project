@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Kitbox.ViewModels;
 using System;
 
-namespace Kitbox.ViewModels;
 
 
 public class StockKeeper : User
@@ -18,7 +17,6 @@ public class StockKeeper : User
         password = "Merge42";
         windowId = 1;
     }
-   
-
 
 }
+

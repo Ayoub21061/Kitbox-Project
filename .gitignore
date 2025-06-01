@@ -1,7 +1,11 @@
 bin/
 obj/
 .vscode/
+<<<<<<< HEAD
 
 #Ignores file changes in the .vs folder too if using visual studio instead of vscode.
 .vs/
 
+=======
+*.cache
+>>>>>>> 051833aa850d9c45ebe227e955d2d2f002ea18c4

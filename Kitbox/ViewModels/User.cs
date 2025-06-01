@@ -1,7 +1,10 @@
 ﻿namespace Kitbox.ViewModels
 {
-    public abstract class User
+    public abstract class AppUser
     {
+<<<<<<< HEAD
+        public string Username { get; set; } = string.Empty;
+=======
         protected string username = "";
         protected string password = "";
         protected string email = "";
@@ -16,5 +19,6 @@
             get => windowId;
             set => windowId = value;
         }
+>>>>>>> main
     }
 }
