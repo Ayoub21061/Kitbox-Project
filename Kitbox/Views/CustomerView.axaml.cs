@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input; 
 using Kitbox.ViewModels;
 
 namespace Kitbox.Views
@@ -11,6 +10,5 @@ namespace Kitbox.Views
             InitializeComponent();
             DataContext = new CustomerViewModel();
         }
-
     }
 }

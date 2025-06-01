@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Platform;
 using Kitbox.ViewModels;
 
 namespace Kitbox.Views

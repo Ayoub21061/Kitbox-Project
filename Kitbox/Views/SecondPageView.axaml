@@ -49,7 +49,7 @@
         <controls:NumericUpDown Minimum="0" Maximum="7" Increment="1" 
                                 Value="{Binding Lockers, Mode=TwoWay}" 
                                 Width="100"/>
-        <Button Content="Voir Aperçu" 
+        <Button Content="Preview" 
                 Command="{Binding VoirApercuCommand}"
                 Margin="0,10,0,0"
                 Width="100"
@@ -69,7 +69,7 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <Image Source="avares://Kitbox/Assets/Locker.png" Width="200"/>
+              <Image Source="avares://Kitbox/Assets/Cabinet.png" Width="200"/>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
