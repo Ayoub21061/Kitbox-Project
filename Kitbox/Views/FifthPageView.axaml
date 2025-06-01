@@ -103,7 +103,7 @@
                 </ItemsControl>
 
                 <!-- Prix total estimé -->
-                <TextBlock Text="{Binding TotalPrice, StringFormat='Prix total estimé : {0} €'}"
+                <TextBlock Text="{Binding TotalPrice, StringFormat='Total price estimated : {0} €'}"
                            FontWeight="Bold"
                            FontSize="18"
                            Foreground="Black"

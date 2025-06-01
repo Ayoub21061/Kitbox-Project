@@ -2,83 +2,100 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Kitbox.Models;
+using System.Data;
 
-namespace Kitbox.Services
-{
-    public class DatabaseService
-    {
-        private readonly string connectionString =
-            "server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;";
-
-        public bool TesterConnexion()
+        public List<Stock> GetStocks()
         {
-            try
-            {
-                using var conn = new MySqlConnection(connectionString);
-                conn.Open();
-                Console.WriteLine("Connexion réussie !");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erreur : " + ex.Message);
-                return false;
-            }
-        }
-
-        public List<Order_Client> GetOrders()
-        {
-            var orders = new List<Order_Client>();
+            var stocks = new List<Stock>();
 
             using var conn = new MySqlConnection(connectionString);
             conn.Open();
 
             var query = @"SELECT 
-                    order_id, client_id, status_delivery, payment_status, 
-                    total_amount, deposit, date_command_client 
-                  FROM Order_Client";
+                    product_id, article_name, article_status, article_quantity 
+                  FROM Stock";
 
             using var cmd = new MySqlCommand(query, conn);
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
-                orders.Add(new Order_Client
+                stocks.Add(new Stock
                 {
-                    OrderId = reader.GetInt32("order_id"),
-                    ClientId = reader.GetInt32("client_id"),
-                    StatusDelivery = reader.GetString("status_delivery"),
-                    PaymentStatus = reader.GetString("payment_status"),
-                    TotalAmount = reader.GetDecimal("total_amount"),
-                    Deposit = reader.GetDecimal("deposit"),
-                    DateCommandClient = reader.GetDateTime("date_command_client")
+                    ProductId = reader.GetString("product_id"),
+                    ArticleName = reader.GetString("article_name"),
+                    ArticleStatus = reader.GetString("article_status"),
+                    ArticleQuantity = reader.IsDBNull("article_quantity") ? null : reader.GetInt32("article_quantity")
+
                 });
             }
 
-            Console.WriteLine($"GetOrders : {orders.Count} ordres récupérés."); // <-- ajout console
-
-            return orders;
+            Console.WriteLine($"GetStocks : {stocks.Count} éléments récupérés.");
+            return stocks;
         }
 
-        public void AddOrderClient(Order_Client order)
+
+        public void AddStock(Stock stock)
         {
             using var conn = new MySqlConnection(connectionString);
             conn.Open();
 
-            var query = @"INSERT INTO Order_Client 
-                (order_id, client_id, status_delivery, payment_status, total_amount, deposit, date_command_client) 
-                VALUES (@OrderId, @ClientId, @StatusDelivery, @PaymentStatus, @TotalAmount, @Deposit, @DateCommandClient)";
+            var query = @"INSERT INTO Stock (product_id, article_name, article_status, article_quantity)
+                  VALUES (@ProductId, @ArticleName, @ArticleStatus, @ArticleQuantity)";
 
             using var cmd = new MySqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@OrderId", order.OrderId);
-            cmd.Parameters.AddWithValue("@ClientId", order.ClientId);
-            cmd.Parameters.AddWithValue("@StatusDelivery", order.StatusDelivery);
-            cmd.Parameters.AddWithValue("@PaymentStatus", order.PaymentStatus);
-            cmd.Parameters.AddWithValue("@TotalAmount", order.TotalAmount);
-            cmd.Parameters.AddWithValue("@Deposit", order.Deposit);
-            cmd.Parameters.AddWithValue("@DateCommandClient", order.DateCommandClient);
+            cmd.Parameters.AddWithValue("@ProductId", stock.ProductId);
+            cmd.Parameters.AddWithValue("@ArticleName", stock.ArticleName);
+            cmd.Parameters.AddWithValue("@ArticleStatus", stock.ArticleStatus);
+            cmd.Parameters.AddWithValue("@ArticleQuantity", (object?)stock.ArticleQuantity ?? DBNull.Value);
 
             cmd.ExecuteNonQuery();
+            Console.WriteLine($"AddStock : Stock {stock.ProductId} ajouté.");
+        }
+
+        public void UpdateStock(Stock stock)
+        {
+            using var conn = new MySqlConnection(connectionString);
+            conn.Open();
+
+            var query = @"UPDATE Stock 
+                  SET article_name = @ArticleName,
+                      article_status = @ArticleStatus,
+                      article_quantity = @ArticleQuantity
+                  WHERE product_id = @ProductId";
+
+            using var cmd = new MySqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@ProductId", stock.ProductId);
+            cmd.Parameters.AddWithValue("@ArticleName", stock.ArticleName);
+            cmd.Parameters.AddWithValue("@ArticleStatus", stock.ArticleStatus);
+            cmd.Parameters.AddWithValue("@ArticleQuantity", (object?)stock.ArticleQuantity ?? DBNull.Value);
+
+            cmd.ExecuteNonQuery();
+            Console.WriteLine($"UpdateStock : Stock {stock.ProductId} mis à jour.");
+        }
+
+        public void DeleteStock(string productId)
+        {
+            using var conn = new MySqlConnection(connectionString);
+            conn.Open();
+
+            // Supprimer les références dans Supplier_Product
+            var deleteSupplierProductQuery = @"DELETE FROM Supplier_Product WHERE product_id = @ProductId";
+            using (var cmd = new MySqlCommand(deleteSupplierProductQuery, conn))
+            {
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Puis supprimer le produit dans Stock
+            var deleteStockQuery = @"DELETE FROM Stock WHERE product_id = @ProductId";
+            using (var cmd = new MySqlCommand(deleteStockQuery, conn))
+            {
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                cmd.ExecuteNonQuery();
+            }
+
+            Console.WriteLine($"DeleteStock : Stock {productId} supprimé.");
         }
     }
 }
