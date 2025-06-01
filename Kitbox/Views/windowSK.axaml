@@ -3,10 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Kitbox.ViewModels"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Kitbox.Views.WindowSK"
         x:DataType="vm:SkViewModel"
+		xmlns:models="using:Kitbox.Models"
         Title="WindowSK">
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -22,20 +25,20 @@
 
 		<!-- Navigator -->
 		<StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
-			<Button Content="Home" Margin="5"/>
-			<Button Content="Orders" Margin="5"/>
-			<Button Content="Settings" Margin="5"/>
+			<Button Content="Stocks"
+            Command="{Binding StocksPageCommand}"
+            Margin="0,10,10,10"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Background="Red"
+            Foreground="White"
+            Grid.Column="2"/>
 		</StackPanel>
+		
 
-		<!-- Order Tables -->
-		<DataGrid Margin="20" ItemsSource=""
-          GridLinesVisibility="All"
-          BorderThickness="1" BorderBrush="Gray">
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="First Name"  Binding=""/>
-				<DataGridTextColumn Header="Last Name" Binding="" />
-				<DataGridCheckBoxColumn Header="Fictitious?" Binding="" />
-			</DataGrid.Columns>
+		<!-- DataGrid affichant les commandes -->
+		<DataGrid RowHeight="30" Grid.Row="1" Grid.Column="1" Margin="10" ItemsSource="{Binding Orders}" AutoGenerateColumns="True" Foreground="Red">
 		</DataGrid>
+
 	</Grid>
 </Window>

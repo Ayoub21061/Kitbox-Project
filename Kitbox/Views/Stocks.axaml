@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Kitbox.ViewModels"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Kitbox.Views.Stocks"
+        x:DataType="vm:StocksViewModel"
+		xmlns:models="using:Kitbox.Models"
+        Title="Stocks">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Search Bar -->
+		<TextBox Grid.Row="0" Grid.ColumnSpan="2" Name="SearchBar" Width="300" Margin="10"/>
+
+		<!-- Navigator -->
+		<StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
+			<Button Content="Ajouter" Command="{Binding AddStockCommand}" Margin="0,10,10,10"
+				BorderBrush="Black"
+				BorderThickness="1"
+				Background="Red"
+				Foreground="White"/>
+			<Button Content="Modifier" Command="{Binding UpdateStockCommand}" Margin="0,10,10,10"
+				BorderBrush="Black"
+				BorderThickness="1"
+				Background="Red"
+				Foreground="White"/>
+			<Button Content="Supprimer" Command="{Binding DeleteStockCommand}" Margin="0,10,10,10"
+				BorderBrush="Black"
+				BorderThickness="1"
+				Background="Red"
+				Foreground="White"/>
+			<Button Content="Orders"
+				Command="{Binding OrderPageCommand}"
+				Margin="0,10,10,10"
+				BorderBrush="Black"
+				BorderThickness="1"
+				Background="Red"
+				Foreground="White"/>
+		</StackPanel>
+		
+
+		<!-- DataGrid affichant les commandes -->
+
+		<DataGrid Grid.Row="1" Grid.Column="1"
+          ItemsSource="{Binding Stocks}"
+          SelectedItem="{Binding SelectedStock}"
+          AutoGenerateColumns="True"
+          Margin="10"/>
+
+
+	</Grid>
+</Window>
