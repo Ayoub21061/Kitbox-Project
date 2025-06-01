@@ -43,7 +43,7 @@
       <!-- Bordure qui englobe le texte "Lockers" et le champ de sélection de couleur-->
       <Border BorderBrush="Black" BorderThickness="1" Margin="10,200,0,200" Padding="10" Grid.Column="0" Grid.ColumnSpan="2">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-          <TextBlock Text="Iron's color" 
+          <TextBlock Text="Iron" 
                      Foreground="Black" 
                      FontWeight="Bold" 
                      VerticalAlignment="Center"

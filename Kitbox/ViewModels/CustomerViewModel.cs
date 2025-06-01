@@ -1,13 +1,18 @@
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kitbox.Views;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Kitbox.ViewModels
 {
@@ -20,7 +25,13 @@ namespace Kitbox.ViewModels
         private int height;
 
         [ObservableProperty]
+        private int totalHeight;
+
+        [ObservableProperty]
         private int width;
+
+        [ObservableProperty]
+        private int totalWidth;
 
         [ObservableProperty]
         private int depth;
@@ -38,12 +49,32 @@ namespace Kitbox.ViewModels
         private string email;
 
         [ObservableProperty]
+        private string validationMessage;
+
+        [ObservableProperty]
+        public ObservableCollection<string>? iron;
+
+        [ObservableProperty]
+        public string? ironDisplay;
+
+        [ObservableProperty]
+        public ObservableCollection<string>? portes;
+
+        [ObservableProperty]
+        private string? porteSelected;
+
+        [ObservableProperty]
+        public decimal totalPrice;
+
+        [ObservableProperty]
         private ObservableCollection<string> apercuLockerImages = new ObservableCollection<string>();
 
+        public ObservableCollection<LockerData> LockersData { get; set; } = new ObservableCollection<LockerData>();
+
+
+
+
         public string ErrorMessage { get; set; } = "";
-
-
-        public List<string> Iron { get; } = new List<string> { "Blanc", "Noir", "Gris", "Rose" };
 
         // Commandes
         public IRelayCommand SaveCommand { get; }
@@ -59,6 +90,10 @@ namespace Kitbox.ViewModels
         public IRelayCommand AppendCharacterCommand { get; }
         public IRelayCommand DeleteCharacterCommand { get; }
         public IRelayCommand SaveEmailCommand { get; }
+        public IRelayCommand SaveDimensionsCommand { get; }
+        public IRelayCommand ShowDetailsCommand { get; }
+        public IRelayCommand BackToHomeCommand { get; }
+
 
         // Collection pour les données des lockers
         public ObservableCollection<LockerViewModel> LockersList { get; } = new ObservableCollection<LockerViewModel>();
@@ -74,12 +109,18 @@ namespace Kitbox.ViewModels
             Lockers = 0;
             SelectedIron = "";
             Email = "";
+            ValidationMessage = "";
 
             LockersList = new ObservableCollection<LockerViewModel>();
             StructureArmory = new ObservableCollection<ArmoryStructureRow>();
 
             // Chargement des données depuis le JSON (structure + lockers)
             LoadCombinedData();
+            _ = LoadAnglesFromDatabaseAsync();
+            LoadIronValue();
+            LoadCustomerData();
+
+
 
             // Initialisation des commandes
             SaveCommand = new RelayCommand(SaveCustomerData);
@@ -91,11 +132,214 @@ namespace Kitbox.ViewModels
             FifthPageCommand = new RelayCommand(FifthNextPage);
             SixthPageCommand = new RelayCommand(SixthNextPage);
             FinalPageCommand = new RelayCommand(FinalPage);
+            BackToHomeCommand = new RelayCommand(ReturnFirstPage);
             VoirApercuCommand = new RelayCommand(ExecuteVoirApercu);
             AppendCharacterCommand = new RelayCommand<string>(AppendCharacter);
             DeleteCharacterCommand = new RelayCommand(DeleteCharacter);
             SaveEmailCommand = new RelayCommand(SaveEmail);
+            SaveDimensionsCommand = new RelayCommand(SaveDimension);
+            ShowDetailsCommand = new RelayCommand(ShowPriceDetails);
+
+
+
         }
+
+        private void ShowPriceDetails()
+        {
+            using var connection = new MySqlConnection("server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;");
+            connection.Open();
+
+            decimal totalPrice = 0;
+
+            var articles = new List<string>();
+
+            foreach (var locker in LockersData)
+            {
+                if (!string.IsNullOrEmpty(locker.PanelLeft))
+                    articles.Add(locker.PanelLeft);
+                if (!string.IsNullOrEmpty(locker.PanelRight))
+                    articles.Add(locker.PanelRight);
+                if (!string.IsNullOrEmpty(locker.PanelBottom))
+                    articles.Add(locker.PanelBottom);
+                if (!string.IsNullOrEmpty(locker.PanelUp))
+                    articles.Add(locker.PanelUp);
+                if (!string.IsNullOrEmpty(locker.TypeDePorte) && locker.TypeDePorte != "No Door")
+                    articles.Add(locker.TypeDePorte);
+            }
+
+            if (!string.IsNullOrEmpty(SelectedIron))
+                articles.Add(SelectedIron); // Ajouter l’élément principal Iron
+
+            foreach (var article in articles.Distinct())
+            {
+                var getProductIdCmd = new MySqlCommand("SELECT product_id FROM Stock WHERE article_name = @article", connection);
+                getProductIdCmd.Parameters.AddWithValue("@article", article);
+                var productId = getProductIdCmd.ExecuteScalar()?.ToString();
+
+                if (productId != null)
+                {
+                    var getPriceCmd = new MySqlCommand("SELECT article_price FROM Supplier_Product WHERE product_id = @id", connection);
+                    getPriceCmd.Parameters.AddWithValue("@id", productId);
+                    var price = getPriceCmd.ExecuteScalar();
+                    if (price != null)
+                        totalPrice += Convert.ToDecimal(price);
+                }
+            }
+
+            // Affiche le total
+            TotalPrice = totalPrice;
+        }
+
+
+        private void LoadCustomerData()
+        {
+            var jsonPath = "customer_data.json";
+            if (File.Exists(jsonPath))
+            {
+                var json = File.ReadAllText(jsonPath);
+                var doc = JsonSerializer.Deserialize<CustomerJsonData>(json);
+                if (doc?.LockersData != null)
+                {
+                    LockersData = new ObservableCollection<LockerData>(doc.LockersData);
+                }
+            }
+        }
+
+        private class CustomerJsonData
+        {
+            public List<LockerData>? LockersData { get; set; }
+        }
+
+        private void LoadIronValue()
+        {
+            try
+            {
+                string jsonPath = "customer_data.json"; // adapte le chemin si besoin
+                if (File.Exists(jsonPath))
+                {
+                    string jsonString = File.ReadAllText(jsonPath);
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    JsonElement root = doc.RootElement;
+
+                    if (root.TryGetProperty("Iron", out JsonElement ironElement))
+                    {
+                        IronDisplay = ironElement.GetString();
+                    }
+                    else
+                    {
+                        IronDisplay = "Iron key not found";
+                    }
+                }
+                else
+                {
+                    IronDisplay = "File not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                IronDisplay = $"Error: {ex.Message}";
+            }
+        }
+
+
+
+        public void SaveDimension()
+        {
+            string filePath = "customer_data.json";
+            if (!File.Exists(filePath))
+            {
+                ValidationMessage = "Erreur : le fichier customer_data.json est introuvable.";
+                return;
+            }
+
+            try
+            {
+                string jsonContent = File.ReadAllText(filePath);
+                var data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+
+                if (data == null)
+                {
+                    ValidationMessage = "Erreur : données invalides dans le fichier JSON.";
+                    return;
+                }
+
+                int baseHeight = data.ContainsKey("Height") ? data["Height"].GetInt32() : 0;
+                int baseWidth = data.ContainsKey("Width") ? data["Width"].GetInt32() : 0;
+
+                double totalHeight = 0;
+                double totalWidth = 0;
+
+                if (data.ContainsKey("LockersData") && data["LockersData"].ValueKind == JsonValueKind.Array)
+                {
+                    var lockersData = data["LockersData"].EnumerateArray();
+                    foreach (var locker in lockersData)
+                    {
+                        int longueur = locker.TryGetProperty("LongueurVertical", out var l) ? l.GetInt32() : 0;
+                        int largeur = locker.TryGetProperty("LargeurHorizontal", out var w) ? w.GetInt32() : 0;
+
+                        totalHeight += longueur;
+                        totalWidth += largeur;
+                    }
+                }
+
+                if (totalHeight > baseHeight && totalWidth > baseWidth)
+                {
+                    ValidationMessage = "Erreur : la longueur ET la largeur totales dépassent les dimensions initiales.";
+                }
+                else if (totalHeight > baseHeight)
+                {
+                    ValidationMessage = "Erreur : la longueur totale dépasse la longueur initiale.";
+                }
+                else if (totalWidth > baseWidth)
+                {
+                    ValidationMessage = "Erreur : la largeur totale dépasse la largeur initiale.";
+                }
+                else
+                {
+                    ValidationMessage = "Dimensions valides et sauvegardées avec succès !";
+                }
+
+                // Mise à jour des propriétés bindées
+                TotalHeight = (int)totalHeight;
+                TotalWidth = (int)totalWidth;
+            }
+            catch (Exception ex)
+            {
+                ValidationMessage = $"Erreur lors de la lecture du fichier : {ex.Message}";
+            }
+        }
+
+        public async Task LoadAnglesFromDatabaseAsync()
+        {
+            try
+            {
+                var angleList = new ObservableCollection<string>();
+                string connectionString = "server=2001:6a8:11d0:11::152;port=3306;user=groupe;password=motdepassefort;database=ma_base;";
+
+                using var connection = new MySqlConnection(connectionString);
+                await connection.OpenAsync();
+
+                string query = "SELECT article_name FROM Stock WHERE article_name LIKE '%Angle%'";
+
+                using var command = new MySqlCommand(query, connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    angleList.Add(reader.GetString("article_name"));
+                }
+
+                Iron = angleList;
+
+                if (Iron.Count > 0)
+                    SelectedIron = Iron[0];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur chargement des irons : {ex.Message}");
+            }
+        }
+
 
         public bool IsEmailValid()
         {
@@ -160,9 +404,6 @@ namespace Kitbox.ViewModels
             }
         }
 
-
-
-
         // Méthode unique de chargement combiné
         public void LoadCombinedData()
         {
@@ -179,6 +420,7 @@ namespace Kitbox.ViewModels
                     Depth = data.ContainsKey("Depth") ? data["Depth"].GetInt32() : 0;
                     Lockers = data.ContainsKey("Lockers") ? data["Lockers"].GetInt32() : 0;
                     SelectedIron = data.ContainsKey("Iron") ? data["Iron"].GetString() : "";
+                    TotalHeight = CalculateSumLengthVerticalFromJson();
 
                     // Mise à jour du tableau "Structure de l'armoire" avec la classe ArmoryStructureRow
                     StructureArmory.Clear();
@@ -198,11 +440,21 @@ namespace Kitbox.ViewModels
                         {
                             var locker = new LockerViewModel(index, this)
                             {
-                                SelectedCouleur = lockerData.TryGetProperty("Couleur", out var couleur) ? couleur.GetString() : "",
-                                Longueur = lockerData.TryGetProperty("Longueur", out var longueur) ? longueur.GetInt32() : 0,
+                                LongueurHorizontal = lockerData.TryGetProperty("LongueurHorizontal", out var longueurHorizontal) ? longueurHorizontal.GetInt32() : 0,
+                                LargeurHorizontal = lockerData.TryGetProperty("LargeurHorizontal", out var largeurHorizontal) ? largeurHorizontal.GetInt32() : 0,
+                                LongueurVertical = lockerData.TryGetProperty("LongueurVertical", out var longueurVertical) ? longueurVertical.GetInt32() : 0,
+                                LargeurVertical = lockerData.TryGetProperty("LargeurVertical", out var largeurVertical) ? largeurVertical.GetInt32() : 0,
                                 HasPorte = lockerData.TryGetProperty("HasPorte", out var hasPorte) ? hasPorte.GetBoolean() : false,
-                                CouleurPorteSelected = lockerData.TryGetProperty("CouleurPorte", out var couleurPorte) ? couleurPorte.GetString() : "",
-                                MatérielPorte = lockerData.TryGetProperty("MaterielPorte", out var materielPorte) ? materielPorte.GetString() : ""
+                                PorteSelected = lockerData.TryGetProperty("TypeDePorte", out var porteSelected) ? porteSelected.GetString() : "",
+                                PanelLeft = lockerData.TryGetProperty("PanelLeft", out var panelLeft) ? panelLeft.GetString() : "",
+                                PanelRight = lockerData.TryGetProperty("PanelRight", out var panelRight) ? panelRight.GetString() : "",
+                                PanelBottom = lockerData.TryGetProperty("PanelBottom", out var panelBottom) ? panelBottom.GetString() : "",
+                                PanelUp = lockerData.TryGetProperty("PanelUp", out var panelUp) ? panelUp.GetString() : "",
+                                CrossbarLeft = lockerData.TryGetProperty("CrossbarLeft", out var crossbarLeft) ? crossbarLeft.GetString() : "",
+                                CrossbarRight = lockerData.TryGetProperty("CrossbarRight", out var crossbarRight) ? crossbarRight.GetString() : "",
+                                CrossbarBack = lockerData.TryGetProperty("CrossbarBack", out var crossbarBack) ? crossbarBack.GetString() : "",
+                                BattenSelected = lockerData.TryGetProperty("BattenSelected", out var battenSelected) ? battenSelected.GetString() : "",
+
                             };
                             LockersList.Add(locker);
                             index++;
@@ -360,6 +612,82 @@ namespace Kitbox.ViewModels
             }
         }
 
+        public int CalculateSumLengthVerticalFromJson()
+        {
+            string filePath = "customer_data.json";
+            if (!File.Exists(filePath))
+                return 0;
+
+            string jsonContent = File.ReadAllText(filePath);
+            var data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+            if (data == null || !data.ContainsKey("LockersData"))
+                return 0;
+
+            int sumLengthVertical = 0;
+            var lockersArray = data["LockersData"].EnumerateArray();
+            foreach (var locker in lockersArray)
+            {
+                if (locker.TryGetProperty("LongueurVertical", out JsonElement longueurVertProp))
+                {
+                    sumLengthVertical += longueurVertProp.GetInt32();
+                }
+            }
+            return sumLengthVertical;
+        }
+
+        public int CalculateSumWidthHorizontalFromJson()
+        {
+            string filePath = "customer_data.json";
+            if (!File.Exists(filePath))
+                return 0;
+
+            string jsonContent = File.ReadAllText(filePath);
+            var data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+            if (data == null || !data.ContainsKey("LockersData"))
+                return 0;
+
+            int sumWidthHorizontal = 0;
+            var lockersArray = data["LockersData"].EnumerateArray();
+            foreach (var locker in lockersArray)
+            {
+                if (locker.TryGetProperty("LargeurHorizontal", out JsonElement largeurHorProp))
+                {
+                    sumWidthHorizontal += largeurHorProp.GetInt32();
+                }
+            }
+            return sumWidthHorizontal;
+        }
+
+
+        public bool CanGoNextPage()
+        {
+            int totalLength = CalculateSumLengthVerticalFromJson(); // longueur totale des lockers
+            int totalWidth = CalculateSumWidthHorizontalFromJson();   // largeur totale des lockers (à implémenter)
+
+            bool lengthExceeded = totalLength > Height;
+            bool widthExceeded = totalWidth > Width;
+
+            if (lengthExceeded && widthExceeded)
+            {
+                ErrorMessage = $"Votre composition dépasse la hauteur maximale ({Height} cm) ET la largeur maximale ({Width} cm). " +
+                               $"Longueur totale = {totalLength} cm, Largeur totale = {totalWidth} cm.";
+                return false;
+            }
+            else if (lengthExceeded)
+            {
+                ErrorMessage = $"Votre composition dépasse la hauteur maximale ({Height} cm). Longueur totale = {totalLength} cm.";
+                return false;
+            }
+            else if (widthExceeded)
+            {
+                ErrorMessage = $"Votre composition dépasse la largeur maximale ({Width} cm). Largeur totale = {totalWidth} cm.";
+                return false;
+            }
+
+            ErrorMessage = string.Empty;
+            return true;
+        }
+
         private void SecondNextPage()
         {
             var SecondPage = new SecondPageView();
@@ -374,8 +702,11 @@ namespace Kitbox.ViewModels
 
         private void FourthNextPage()
         {
-            var FourthPage = new FourthPageView();
-            FourthPage.Show();
+            if (CanGoNextPage())
+            {
+                var FourthPage = new FourthPageView();
+                FourthPage.Show();
+            }
         }
 
         private void FifthNextPage()
@@ -393,6 +724,12 @@ namespace Kitbox.ViewModels
         {
             var FinalPage = new FinalPageView();
             FinalPage.Show();
+        }
+
+        private void ReturnFirstPage()
+        {
+            var mainwindow = new MainWindow();
+            mainwindow.Show();
         }
     }
 }

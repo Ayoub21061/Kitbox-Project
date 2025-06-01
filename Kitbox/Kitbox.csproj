@@ -9,32 +9,38 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
+
     <PackageReference Include="Avalonia" Version="11.2.6" />
     <PackageReference Include="Avalonia.Desktop" Version="11.2.6" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.6" />
-=======
+
     <PackageReference Include="Avalonia" Version="11.1.0" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.1.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.0" />
->>>>>>> main
+
+
+
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0" />
+
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.0" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0" />
     <PackageReference Include="Avalonia.Win32" Version="11.2.6" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-<<<<<<< HEAD
+
     <PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
     <PackageReference Include="ReactiveUI" Version="20.2.45" />
-=======
+
     <PackageReference Include="MySql.Data" Version="9.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ReactiveUI" Version="20.3.1" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,9 +53,12 @@
     <Compile Update="Views\LoginWindow.axaml.cs">
       <DependentUpon>LoginWindow.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Stocks.axaml.cs">
+      <DependentUpon>Stocks.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\windowSK.axaml.cs">
       <DependentUpon>windowSK.axaml</DependentUpon>
     </Compile>
->>>>>>> main
+
   </ItemGroup>
 </Project>
