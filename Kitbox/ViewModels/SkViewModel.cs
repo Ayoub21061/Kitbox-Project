@@ -19,24 +19,9 @@ namespace Kitbox.ViewModels
             set => SetProperty(ref _orders, value);
         }
 
+
         public IRelayCommand StocksPage { get; }
-        
-
-        public SkViewModel()
-        {
-            _dbService = new DatabaseService();
-
-            if (!_dbService.TesterConnexion())
-            {
-                System.Diagnostics.Debug.WriteLine("Erreur : impossible de se connecter à la base de données !");
-            }
-
-            var ordersList = _dbService.GetOrders();
-            System.Diagnostics.Debug.WriteLine("SkViewModel créé");
-            System.Diagnostics.Debug.WriteLine($"Orders récupérés: {ordersList.Count}");
-
-            Orders = new ObservableCollection<Order_Client>(ordersList);
-
+                // Tu peux aussi gérer une UI ou message utilisateur ici
 
             foreach (var order in Orders)
             {
@@ -44,17 +29,12 @@ namespace Kitbox.ViewModels
             }
 
             StocksPage = new RelayCommand(StocksPageCommand);
-
-
-        }
-
-        public IRelayCommand SkPageCommand { get; }
-
-       
+            SkPageCommand = new RelayCommand(ShowSkPage);
+            foreach (var order in Orders)
+            {
+                System.Diagnostics.Debug.WriteLine($"Order: {order.OrderId}, {order.ClientId}, {order.StatusDelivery}");
+            }
         public void StocksPageCommand()
-        {
-            var StocksPage = new Stocks();
-            StocksPage.Show();
-        }
+        private void ShowSkPage()
     }
 }
